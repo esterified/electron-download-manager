@@ -1,12 +1,10 @@
-import Download from './components/Download';
-import Button from './components/Download';
-
+import DownloadUI from './components/DownloadUI';
+import React from 'react';
 // export react component
 export default function App() {
   return (
     <>
-      <h2 className='font-bold'>Downloader Manager</h2>
-      <Download />
+      <DownloadUI />
     </>
   );
 }

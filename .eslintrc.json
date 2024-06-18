@@ -1,4 +1,5 @@
 {
+  // "plugins": ["react-hooks"],
   "env": {
     "browser": true,
     "es6": true,
@@ -10,7 +11,9 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:import/recommended",
     "plugin:import/electron",
-    "plugin:import/typescript"
+    "plugin:import/typescript",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended"
   ],
   "parser": "@typescript-eslint/parser"
 }

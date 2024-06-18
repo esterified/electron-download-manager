@@ -1,4 +1,4 @@
-import { exposeInMainWorldObject } from 'src/preload';
+import { exposeInMainWorldObject } from './src/preload';
 
 export {};
 
