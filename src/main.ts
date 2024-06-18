@@ -14,6 +14,8 @@ const createWindow = () => {
     height: 768,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      //! enable for worker multithreading => https://www.electronjs.org/docs/latest/tutorial/multithreading
+      // nodeIntegrationInWorker: true,
     },
   });
 

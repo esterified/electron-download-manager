@@ -5,7 +5,7 @@ import Button from './components/Download';
 export default function App() {
   return (
     <>
-      <h2>Downloader</h2>
+      <h2 className='font-bold'>Downloader Manager</h2>
       <Download />
     </>
   );

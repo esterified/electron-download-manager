@@ -1,5 +1,9 @@
-interface Window {
-  electronAPI: {
-    addDownloadLink: (a: string) => void;
-  };
+import { exposeInMainWorldObject } from 'src/preload';
+
+export {};
+
+declare global {
+  interface Window {
+    electronAPI: (typeof exposeInMainWorldObject)['electronAPI'];
+  }
 }
