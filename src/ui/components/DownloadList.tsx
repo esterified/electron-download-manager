@@ -1,8 +1,8 @@
 import { Checkbox } from '@headlessui/react';
-import React, { useEffect } from 'react';
-import { IDownloads, IDownloadsUI } from '../../lib/types';
+import React from 'react';
+import { IDownloadsUI } from '../../lib/types';
 import { MdCancel } from 'react-icons/md';
-const TABLE_HEADERS = ['', 'URL', 'Status', 'Actions'];
+const TABLE_HEADERS = ['', 'URL', 'Status', 'Percentage', 'Actions'];
 
 export function DownloadList({
   downloads,
@@ -58,6 +58,7 @@ export function DownloadList({
             </td>
             <td className='table_cells'>{it.url}</td>
             <td className='table_cells'>{it.status.toUpperCase()}</td>
+            <td className='table_cells'>{`${it.percentage}%`}</td>
             <td className='table_cells'>
               <button
                 onClick={async () => {

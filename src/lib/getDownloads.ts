@@ -1,17 +1,15 @@
 import { IpcMainEvent } from 'electron';
 import { downloadProcesses } from './addDownloadLink';
+import prisma from './prisma';
+import { Download } from '@prisma/client';
 
 // arrow function
 export const getDownloadsHandler = async (
   event: IpcMainEvent,
   url?: string
 ) => {
+  const download: Download[] = await prisma.download.findMany({ take: 50 });
   return JSON.stringify(
-    downloadProcesses
-      .filter((a) => (!url ? true : a.url === url))
-      .map((a: (typeof downloadProcesses)[0]) => {
-        const { downloader, ...t } = a;
-        return t;
-      }) || {}
+    download.filter((a: Download) => (!url ? true : a.url === url)) || {}
   );
 };

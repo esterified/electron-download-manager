@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DownloadList } from './DownloadList';
 import React, { useCallback } from 'react';
 import { IDownloads, IDownloadsUI } from '../../lib/types';

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "target": "ESNext",
-    "module": "commonjs",
+    "module": "CommonJS",
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -11,6 +11,9 @@
     "baseUrl": ".",
     "outDir": "dist",
     "moduleResolution": "node",
+    "paths": {
+      "~/*": ["./*"]
+    },
     "resolveJsonModule": true
   }
 }
