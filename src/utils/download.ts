@@ -4,8 +4,9 @@ import prisma from '../lib/prisma';
 export const updateDownload = async ({
   id,
   status,
+  ...args
 }: Partial<Download> & {
-  status: 'downloading' | 'completed' | 'cancelled' | 'error';
+  status?: 'downloading' | 'completed' | 'cancelled' | 'error';
 }) => {
   await prisma.download.update({
     where: {
@@ -13,6 +14,7 @@ export const updateDownload = async ({
     },
     data: {
       status,
+      ...args,
     },
   });
 };

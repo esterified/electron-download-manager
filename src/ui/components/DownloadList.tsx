@@ -1,6 +1,7 @@
 import { Checkbox } from '@headlessui/react';
-import React from 'react';
+import React, { useState } from 'react';
 import { IDownloadsUI } from '../../lib/types';
+import { twMerge } from 'tailwind-merge';
 // import { MdCancel } from 'react-icons/md';
 
 export function DownloadList({
@@ -13,6 +14,8 @@ export function DownloadList({
   // define a boolean state bulk actions
   const [bulkActions, setBulkActions] = React.useState(false);
 
+  const [highlightIndex, sethighlightIndex] = useState<number | null>(null);
+
   // log something on state change of the bulk action
   React.useEffect(() => {
     setDownloads((prev: IDownloadsUI[]) => {
@@ -22,7 +25,7 @@ export function DownloadList({
         checked: bulkActions,
       }));
     });
-  }, [bulkActions]);
+  }, [bulkActions, setDownloads]);
   const TABLE_HEADERS = [
     <Checkbox
       key='checkbox'
@@ -45,6 +48,7 @@ export function DownloadList({
         />
       </svg>
     </Checkbox>,
+    'Name',
     'URL',
     'Status',
     'Percentage',
@@ -65,7 +69,23 @@ export function DownloadList({
       </thead>
       <tbody>
         {downloads?.map((it, i) => (
-          <tr key={i}>
+          <tr
+            key={i}
+            className={twMerge(
+              'cursor-pointer',
+              highlightIndex === i &&
+                'border-2 border-[var(--color-light-blue)]'
+            )}
+            onClick={async () => {
+              console.log(it.filepath);
+              sethighlightIndex(i);
+              const result = await window.electronAPI.openDir(
+                ['openFile'],
+                it.filepath.replace(it.filename, '')
+              );
+              console.log('done');
+            }}
+          >
             <td className='table_cells'>
               {
                 <Checkbox
@@ -94,6 +114,7 @@ export function DownloadList({
                 </Checkbox>
               }
             </td>
+            <td className='table_cells'>{it.filename}</td>
             <td className='table_cells'>{it.url}</td>
             <td className='table_cells'>{it.status.toUpperCase()}</td>
             <td className='table_cells'>{`${it.percentage}%`}</td>

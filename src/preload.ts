@@ -1,7 +1,7 @@
 // See the Electron documentation for details on how to use preload scripts:
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 
-import { contextBridge, ipcRenderer } from 'electron';
+import { OpenDialogOptions, contextBridge, ipcRenderer } from 'electron';
 
 export const exposeInMainWorldObject = {
   electronAPI: {
@@ -11,7 +11,8 @@ export const exposeInMainWorldObject = {
       ipcRenderer.invoke('cancelDownloadLink', id),
     onDownloadCompleted: (callback: (v: string) => void) =>
       ipcRenderer.on('downloadCompleted', (_event, v) => callback(v)),
-    pickdir: () => ipcRenderer.invoke('pickdir'),
+    openDir: (props: OpenDialogOptions['properties'], defaultPath?: string) =>
+      ipcRenderer.invoke('openDir', props, defaultPath),
   },
 };
 for (const key of Object.entries(exposeInMainWorldObject)) {

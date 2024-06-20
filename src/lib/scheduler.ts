@@ -1,7 +1,7 @@
 import { BrowserWindow, webContents } from 'electron';
 import prisma from './prisma';
 import { downloadTasks } from './downloadQueue';
-import { GlobalSchedulerInstance, mainWindowGlobal } from '../main';
+import { GlobalSchedulerInstance, GlobalMainWindow } from '../main';
 import { getAllDownloads } from '../utils/download';
 
 export class Scheduler {

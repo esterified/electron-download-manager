@@ -7,7 +7,7 @@ import { Download } from '@prisma/client';
 import { getAllDownloads, updateDownload } from '../utils/download';
 import { DownloaderHelper } from 'node-downloader-helper';
 import { downloadTasks } from './downloadQueue';
-import { GlobalSchedulerInstance, mainWindowGlobal } from '../main';
+import { GlobalSchedulerInstance, GlobalMainWindow } from '../main';
 
 export const downloadHandler = async (event: IpcMainEvent, url: string) => {
   console.log('addDownloadLink', url);
@@ -40,24 +40,19 @@ export const downloadHandler = async (event: IpcMainEvent, url: string) => {
   console.log(download);
   downloader.start();
   downloader.on('progress.throttled', async ({ progress, speed }) => {
-    await prisma.download.update({
-      data: {
-        percentage: parseInt(progress.toString()),
-        speed: progress === 100 ? '' : bytesToSize(speed) + '/s',
-      },
-      where: {
-        id: download.id,
-      },
+    await updateDownload({
+      id: download?.id,
+      percentage: parseInt(progress.toString()),
+      speed: progress === 100 ? '' : bytesToSize(speed) + '/s',
     });
   });
-  // const index = downloadTasks.length;
-  downloader.on('download', () => {
+  downloader.on('download', (info) => {
     downloadTasks.push({
       url,
       downloader,
       id: download?.id || 0,
     });
-    if (mainWindowGlobal && !GlobalSchedulerInstance.getRunningStatus()) {
+    if (GlobalMainWindow && !GlobalSchedulerInstance.getRunningStatus()) {
       GlobalSchedulerInstance.start();
     }
   });
@@ -79,6 +74,13 @@ export const downloadHandler = async (event: IpcMainEvent, url: string) => {
       event.sender.send('downloadCompleted', JSON.stringify(allDownloads));
       return;
     }
+  });
+  downloader.on('renamed', async (info) => {
+    console.log('renamed', info);
+    await updateDownload({
+      id: download?.id,
+      filename: info.fileName,
+    });
   });
   downloader.on('error', async (info) => {
     console.log('error', info.message);

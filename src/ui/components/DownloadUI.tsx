@@ -65,7 +65,9 @@ export default function DownloadUI() {
             disabled={!downloadIsChecked}
             onClick={async () => {
               if (i === 3) {
-                const result = await window.electronAPI.pickdir();
+                const result = await window.electronAPI.openDir([
+                  'openDirectory',
+                ]);
 
                 if (result) {
                   console.log(result);

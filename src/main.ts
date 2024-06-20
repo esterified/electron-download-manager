@@ -1,14 +1,14 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 import { initIPCEvents } from './lib/ipcEvents';
-import prisma from './lib/prisma';
 import { downloadProcessorCron, Scheduler } from './lib/scheduler';
+import { initGlobalSettings } from './lib/initGlobalSettings';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
-export let mainWindowGlobal: BrowserWindow | null = null;
+export let GlobalMainWindow: BrowserWindow | null = null;
 export let GlobalSchedulerInstance: InstanceType<typeof Scheduler> | null =
   null;
 const createWindow = () => {
@@ -35,9 +35,9 @@ const createWindow = () => {
       path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
     );
   }
-  mainWindowGlobal = mainWindow;
+  GlobalMainWindow = mainWindow;
   GlobalSchedulerInstance = new Scheduler(
-    downloadProcessorCron(mainWindowGlobal)
+    downloadProcessorCron(GlobalMainWindow)
   );
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
@@ -49,6 +49,7 @@ const createWindow = () => {
 app.on('ready', () => {
   initIPCEvents();
   createWindow();
+  initGlobalSettings();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
