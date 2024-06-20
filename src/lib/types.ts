@@ -4,7 +4,7 @@ import { DownloaderHelper } from 'node-downloader-helper';
 export interface IDownloadsUI extends Download {
   checked: boolean;
 }
-export interface IDownloads {
+export interface IDownloadTask {
   id: number;
   url: string;
   downloader: DownloaderHelper;

@@ -1,3 +1,3 @@
-import { IDownloads } from './types';
+import { IDownloadTask } from './types';
 
-export const downloadTasks: IDownloads[] = [];
+export const downloadTasks: IDownloadTask[] = [];

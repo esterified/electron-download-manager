@@ -63,7 +63,16 @@ export default function DownloadUI() {
             key={i}
             className={`btn disabled:opacity-20 disabled:hover:bg-[unset] hover:bg-gray-700`}
             disabled={!downloadIsChecked}
-            onClick={() => {
+            onClick={async () => {
+              if (i === 3) {
+                const result = await window.electronAPI.pickdir();
+
+                if (result) {
+                  console.log(result);
+                  // control[ext.name] = result;
+                  // setState({ builtin, control });
+                }
+              }
               // alert();
             }}
           >

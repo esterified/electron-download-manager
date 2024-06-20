@@ -11,6 +11,7 @@ export const exposeInMainWorldObject = {
       ipcRenderer.invoke('cancelDownloadLink', id),
     onDownloadCompleted: (callback: (v: string) => void) =>
       ipcRenderer.on('downloadCompleted', (_event, v) => callback(v)),
+    pickdir: () => ipcRenderer.invoke('pickdir'),
   },
 };
 for (const key of Object.entries(exposeInMainWorldObject)) {
