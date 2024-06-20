@@ -1,20 +1,22 @@
 import { IpcMainEvent } from 'electron';
 import prisma from './prisma';
-import { updateDownload } from '../utils/download';
 import { downloadTasks } from './downloadQueue';
 
 //arrow function
-export const cancelDownloadHandler = async (
+export const deleteDownloadHandler = async (
   event: IpcMainEvent,
-  id: number
+  id: number,
+  url?: string
 ) => {
   const downloader = downloadTasks.find((a) => a.id === id)?.downloader;
   if (downloader) {
     downloader.pause();
     console.log(`download ID:${id} cancelled`);
   }
-  await updateDownload({
-    id,
-    status: 'cancelled',
+  await prisma.download.delete({
+    where: {
+      id: id,
+    },
   });
+  console.log(`download ID:${id} Deleted`);
 };

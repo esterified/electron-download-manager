@@ -7,8 +7,8 @@ export const exposeInMainWorldObject = {
   electronAPI: {
     addDownloadLink: (url: string) => ipcRenderer.send('addDownloadLink', url),
     getDownloads: (url?: string) => ipcRenderer.invoke('getDownloads', url),
-    cancelDownloadLink: (url: string) =>
-      ipcRenderer.invoke('cancelDownloadLink', url),
+    cancelDownloadLink: (id: number) =>
+      ipcRenderer.invoke('cancelDownloadLink', id),
     onDownloadCompleted: (callback: (v: string) => void) =>
       ipcRenderer.on('downloadCompleted', (_event, v) => callback(v)),
   },

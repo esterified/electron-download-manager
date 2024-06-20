@@ -39,7 +39,7 @@
     @apply bg-gray-700;
   }
   .table_cells {
-    @apply border border-gray-500 px-2 py-1;
+    @apply border border-gray-500 px-2 py-3;
   }
 }
 

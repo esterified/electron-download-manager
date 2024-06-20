@@ -1,29 +1,32 @@
 import { IpcMainEvent } from 'electron';
-import { Downloader } from 'nodejs-file-downloader';
 import path from 'path';
 import { Worker } from 'worker_threads';
-import { IDownloads } from './types';
 import prisma from './prisma';
 import { bytesToSize } from '../utils/convert';
+import { Download } from '@prisma/client';
+import { getAllDownloads, updateDownload } from '../utils/download';
+import { DownloaderHelper } from 'node-downloader-helper';
+import { downloadTasks } from './downloadQueue';
+import { GlobalSchedulerInstance, mainWindowGlobal } from '../main';
 
-export const downloadProcesses: IDownloads[] = [];
 export const downloadHandler = async (event: IpcMainEvent, url: string) => {
   console.log('addDownloadLink', url);
 
-  //get filename from url
-  const filename = path.basename(url);
-  const resSize = await fetch(url).then((res) => {
-    const ln = res.headers.get('content-length');
-    return res.ok && ln ? ln : '0';
-  });
-  const filesize = bytesToSize(+resSize);
+  const downloader = new DownloaderHelper(url, './downloads');
 
+  const sizeRequest: { name: string; total: number | null } | null =
+    await downloader.getTotalSize().catch((err) => {
+      console.log(err);
+      return null;
+    });
+  const filesize = bytesToSize(sizeRequest?.total || 0);
   console.log('filesize: ', filesize);
-  const download = await prisma.download
+
+  const download: Download | null = await prisma.download
     .create({
       data: {
         url: url,
-        filename: filename,
+        filename: sizeRequest?.name,
         status: 'downloading',
         filesize: filesize,
         percentage: 0,
@@ -35,50 +38,59 @@ export const downloadHandler = async (event: IpcMainEvent, url: string) => {
     });
 
   console.log(download);
-  const downloader = new Downloader({
-    url: url,
-    directory: './downloads',
-    onProgress: async function (percentage, chunk, remainingSize) {
-      // console.log('% ', percentage);
-      // const convertedremainingSize = bytesToSize(remainingSize);
-      // console.log('Remaining data: ', convertedremainingSize);
-      await prisma.download.update({
-        data: {
-          percentage: parseInt(percentage),
-        },
-        where: {
-          url: url,
-        },
-      });
-    },
+  downloader.start();
+  downloader.on('progress.throttled', async ({ progress, speed }) => {
+    await prisma.download.update({
+      data: {
+        percentage: parseInt(progress.toString()),
+        speed: progress === 100 ? '' : bytesToSize(speed) + '/s',
+      },
+      where: {
+        id: download.id,
+      },
+    });
   });
-  const index = downloadProcesses.length;
-  downloadProcesses.push({
-    url,
-    downloader,
-    status: 'downloading',
-    id: download?.id || 0,
-  });
-  try {
-    const { filePath, downloadStatus } = await downloader.download(); //Downloader.download() resolves with some useful properties.
-
-    console.log('All done', downloadStatus);
-    downloadProcesses[index].status = 'downloaded';
-  } catch (error: any) {
-    console.log('Download failed', error.message);
-    if (error.code === 'ERR_REQUEST_CANCELLED') {
-      downloadProcesses[index].status = 'cancelled';
-    } else {
-      downloadProcesses[index].status = 'error';
+  // const index = downloadTasks.length;
+  downloader.on('download', () => {
+    downloadTasks.push({
+      url,
+      downloader,
+      id: download?.id || 0,
+    });
+    if (mainWindowGlobal && !GlobalSchedulerInstance.getRunningStatus()) {
+      GlobalSchedulerInstance.start();
     }
-  }
-  console.log('downloadProcesses', downloadProcesses.length);
-  console.log('downloadProcesses after', downloadProcesses.length);
-  const allDownloads = await prisma.download.findMany({ take: 50 });
-  event.sender.send('downloadCompleted', JSON.stringify(allDownloads));
+  });
+  downloader.on('end', async (info) => {
+    if (info.incomplete === false) {
+      console.log('All done', info);
+      await updateDownload({
+        id: download?.id,
+        status: 'completed',
+        filepath: info.filePath,
+        speed: '',
+      });
+      downloadTasks.splice(
+        downloadTasks.findIndex((a) => a.id === download?.id),
+        1
+      );
+      console.log('downloadTasks after', downloadTasks.length);
+      const allDownloads = await getAllDownloads();
+      event.sender.send('downloadCompleted', JSON.stringify(allDownloads));
+      return;
+    }
+  });
+  downloader.on('error', async (info) => {
+    console.log('error', info.message);
+    await updateDownload({
+      id: download?.id,
+      status: 'error',
+      speed: '',
+    });
+  });
 };
 
-function createWorker(d: Downloader) {
+function createWorker(d: any) {
   return new Promise(function (resolve, reject) {
     const worker = new Worker(path.join(__dirname, 'worker.js'), {
       workerData: { d: d },

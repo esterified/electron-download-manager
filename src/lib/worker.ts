@@ -1,5 +1,5 @@
 // import Downloader from 'nodejs-file-downloader';
-// import { downloadProcesses } from './addDownloadLink';
+// import { downloadTasks } from './addDownloadLink';
 
 // console.log('worker: running');
 // const { workerData, parentPort } = require('worker_threads');
@@ -9,5 +9,5 @@
 // };
 
 // runAsync().then(() => {
-//   parentPort.postMessage(downloadProcesses.length);
+//   parentPort.postMessage(downloadTasks.length);
 // });

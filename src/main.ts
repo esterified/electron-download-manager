@@ -1,12 +1,16 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 import { initIPCEvents } from './lib/ipcEvents';
+import prisma from './lib/prisma';
+import { downloadProcessorCron, Scheduler } from './lib/scheduler';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
-
+export let mainWindowGlobal: BrowserWindow | null = null;
+export let GlobalSchedulerInstance: InstanceType<typeof Scheduler> | null =
+  null;
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -31,7 +35,10 @@ const createWindow = () => {
       path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
     );
   }
-
+  mainWindowGlobal = mainWindow;
+  GlobalSchedulerInstance = new Scheduler(
+    downloadProcessorCron(mainWindowGlobal)
+  );
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 };

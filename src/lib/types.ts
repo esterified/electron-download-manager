@@ -1,5 +1,5 @@
 import { Download } from '@prisma/client';
-import Downloader from 'nodejs-file-downloader';
+import { DownloaderHelper } from 'node-downloader-helper';
 
 export interface IDownloadsUI extends Download {
   checked: boolean;
@@ -7,6 +7,6 @@ export interface IDownloadsUI extends Download {
 export interface IDownloads {
   id: number;
   url: string;
-  downloader: Downloader;
-  status: 'downloading' | 'downloaded' | 'cancelled' | 'error';
+  downloader: DownloaderHelper;
+  // status: 'downloading' | 'completed' | 'cancelled' | 'error';
 }

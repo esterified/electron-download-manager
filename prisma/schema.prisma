@@ -14,10 +14,14 @@ datasource db {
 }
 
 model Download {
-  id         Int     @id @default(autoincrement())
-  url        String  @unique
-  status     String  @default("downloading")
+  id         Int      @id @default(autoincrement())
+  url        String
+  status     String   @default("downloading")
   filename   String?
   filesize   String?
-  percentage Int @default(0)
+  speed      String?
+  percentage Int      @default(0)
+  filepath   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }

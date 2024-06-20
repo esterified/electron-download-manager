@@ -7,8 +7,7 @@ import {
   TransitionChild,
 } from '@headlessui/react';
 import { FaPlus } from 'react-icons/fa6';
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 export default function MyModal({
   url,
