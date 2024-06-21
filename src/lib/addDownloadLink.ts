@@ -30,6 +30,7 @@ export const downloadHandler = async (event: IpcMainEvent, url: string) => {
         status: 'downloading',
         filesize: filesize,
         percentage: 0,
+        speed: '',
       },
     })
     .catch(() => {

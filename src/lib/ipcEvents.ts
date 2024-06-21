@@ -1,39 +1,21 @@
-import {
-  IpcMainEvent,
-  OpenDialogOptions,
-  dialog,
-  ipcMain,
-  shell,
-} from 'electron';
+import { ipcMain } from 'electron';
 import { downloadHandler } from './addDownloadLink';
 import { getDownloadsHandler } from './getDownloads';
 import { cancelDownloadHandler } from './cancelDownload';
-import { GlobalMainWindow } from '../main';
+import { openDirHandler } from './openDirHandler';
+
+import {
+  deleteDownloadHandler,
+  pauseDownloadHandler,
+  playDownloadHandler,
+} from './bulkOperations';
 
 export const initIPCEvents = () => {
   ipcMain.on('addDownloadLink', downloadHandler);
+  ipcMain.on('bulkDeleteDownload', deleteDownloadHandler);
+  ipcMain.on('bulkPlayDownload', playDownloadHandler);
+  ipcMain.on('bulkPauseDownload', pauseDownloadHandler);
   ipcMain.handle('getDownloads', getDownloadsHandler);
   ipcMain.handle('cancelDownloadLink', cancelDownloadHandler);
-  ipcMain.handle(
-    'openDir',
-    async (
-      event,
-      props: OpenDialogOptions['properties'],
-      defaultPath?: string
-    ) => {
-      const result = await dialog.showOpenDialog({
-        title: 'Choose Folder',
-        properties: props,
-        defaultPath,
-      });
-
-      // GlobalMainWindow.webContents.send('open-file', result.filePaths[0]);
-      if (result.canceled || result.filePaths.length < 1) {
-        return undefined;
-      }
-      shell.openPath(result.filePaths[0]);
-
-      return result.filePaths[0];
-    }
-  );
+  ipcMain.handle('openDir', openDirHandler);
 };

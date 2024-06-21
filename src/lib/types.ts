@@ -10,3 +10,4 @@ export interface IDownloadTask {
   downloader: DownloaderHelper;
   // status: 'downloading' | 'completed' | 'cancelled' | 'error';
 }
+export type DownloadStatus = 'downloading' | 'completed' | 'paused' | 'error';

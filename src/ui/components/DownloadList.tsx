@@ -76,15 +76,7 @@ export function DownloadList({
               highlightIndex === i &&
                 'border-2 border-[var(--color-light-blue)]'
             )}
-            onClick={async () => {
-              console.log(it.filepath);
-              sethighlightIndex(i);
-              const result = await window.electronAPI.openDir(
-                ['openFile'],
-                it.filepath.replace(it.filename, '')
-              );
-              console.log('done');
-            }}
+            onClick={() => sethighlightIndex(i)}
           >
             <td className='table_cells'>
               {
@@ -114,7 +106,21 @@ export function DownloadList({
                 </Checkbox>
               }
             </td>
-            <td className='table_cells'>{it.filename}</td>
+            <td className='table_cells'>
+              <button
+                onClick={async () => {
+                  console.log(it.filepath);
+                  const result = await window.electronAPI.openDir(
+                    ['openFile'],
+                    it.filepath.replace(it.filename, '')
+                  );
+                  console.log('done');
+                }}
+              >
+                [open]{' '}
+              </button>
+              <span className='ms-2'>{it.filename}</span>
+            </td>
             <td className='table_cells'>{it.url}</td>
             <td className='table_cells'>{it.status.toUpperCase()}</td>
             <td className='table_cells'>{`${it.percentage}%`}</td>

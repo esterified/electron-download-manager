@@ -1,19 +1,16 @@
 import { Download } from '@prisma/client';
 import prisma from '../lib/prisma';
+import { DownloadStatus } from '../lib/types';
 
 export const updateDownload = async ({
   id,
-  status,
   ...args
-}: Partial<Download> & {
-  status?: 'downloading' | 'completed' | 'cancelled' | 'error';
-}) => {
+}: Partial<Download> & { status?: DownloadStatus }) => {
   await prisma.download.update({
     where: {
       id,
     },
     data: {
-      status,
       ...args,
     },
   });

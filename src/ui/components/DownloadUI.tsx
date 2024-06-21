@@ -13,31 +13,69 @@ import { Button } from '@headlessui/react';
 const defautlurl = `http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`;
 const buttonMarkUp = [
   {
-    id: 'play',
+    id: 'play' as const,
     icon: <IoPlayOutline size={'26px'} />,
     enabled: false,
   },
   {
-    id: 'pause',
+    id: 'pause' as const,
     icon: <FaRegCirclePause size={'26px'} />,
     enabled: false,
   },
   {
-    id: 'delete',
+    id: 'delete' as const,
     icon: <RiDeleteBin5Line size={'26px'} />,
     enabled: false,
   },
   {
-    id: 'folder',
+    id: 'folder' as const,
     icon: <LuFolderDown size={'26px'} />,
     enabled: true,
   },
 ];
+type ButtonMarkup = typeof buttonMarkUp;
 export default function DownloadUI() {
   const [url, setUrl] = React.useState(defautlurl);
   const [downloads, setDownloads] = React.useState<IDownloadsUI[]>([]);
 
   const downloadIsChecked = downloads.some((d) => d.checked === true);
+
+  const runBulkOperation = useCallback(
+    async (label: ButtonMarkup[0]['id']) => {
+      const obj: Record<ButtonMarkup[0]['id'], () => void> = {
+        play: () => {
+          const ids = downloads
+            .filter((d) => d.checked === true)
+            .map((m) => m.id);
+          window.electronAPI.bulkPlayDownload(ids);
+        },
+        pause: () => {
+          const ids = downloads
+            .filter((d) => d.checked === true)
+            .map((m) => m.id);
+          window.electronAPI.bulkPauseDownload(ids);
+        },
+        delete: () => {
+          const ids = downloads
+            .filter((d) => d.checked === true)
+            .map((m) => m.id);
+          window.electronAPI.bulkDeleteDownload(ids);
+        },
+        folder: async () => {
+          const result = await window.electronAPI.openDir(['openDirectory']);
+
+          if (result) {
+            console.log(result);
+            // control[ext.name] = result;
+            // setState({ builtin, control });
+          }
+        },
+      };
+
+      await obj[label]();
+    },
+    [downloads]
+  );
   // eslint-disable-next-line @typescript-eslint/no-empty-function
 
   const parseAndSetDownloads = (d: any) => {
@@ -58,27 +96,18 @@ export default function DownloadUI() {
     <div>
       <div className='bg-header px-2 py-2 inline-flex gap-2 border-b-2 border-black w-full'>
         <MyModal url={url} setUrl={React.useCallback(setUrl, [setUrl])} />
-        {buttonMarkUp.map((it, i) => (
+        {buttonMarkUp.map(({ id, icon }, i) => (
           <button
             key={i}
             className={`btn disabled:opacity-20 disabled:hover:bg-[unset] hover:bg-gray-700`}
             disabled={!downloadIsChecked}
             onClick={async () => {
-              if (i === 3) {
-                const result = await window.electronAPI.openDir([
-                  'openDirectory',
-                ]);
+              runBulkOperation(id);
 
-                if (result) {
-                  console.log(result);
-                  // control[ext.name] = result;
-                  // setState({ builtin, control });
-                }
-              }
               // alert();
             }}
           >
-            {it.icon}
+            {icon}
           </button>
         ))}
       </div>

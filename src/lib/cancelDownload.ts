@@ -13,8 +13,4 @@ export const cancelDownloadHandler = async (
     downloader.pause();
     console.log(`download ID:${id} cancelled`);
   }
-  await updateDownload({
-    id,
-    status: 'cancelled',
-  });
 };

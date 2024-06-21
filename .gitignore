@@ -93,3 +93,5 @@ out/
 
 
 downloads/
+
+prisma/mydb.db
