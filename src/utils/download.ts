@@ -25,3 +25,14 @@ export const getAllDownloads = async () => {
   });
   return download as Download[];
 };
+export const getDownloadsbyIds = async (ids: number[]) => {
+  const download = await prisma.download.findMany({
+    take: 50,
+    where: {
+      id: {
+        in: ids,
+      },
+    },
+  });
+  return download as Download[];
+};

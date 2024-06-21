@@ -9,6 +9,7 @@ import { LuFolderDown } from 'react-icons/lu';
 import { FaRegCirclePause } from 'react-icons/fa6';
 import MyModal from './Modal';
 import { Button } from '@headlessui/react';
+import { Download } from '@prisma/client';
 
 const defautlurl = `http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`;
 const buttonMarkUp = [
@@ -79,13 +80,31 @@ export default function DownloadUI() {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
 
   const parseAndSetDownloads = (d: any) => {
-    const json = JSON.parse(d);
-    console.log(json);
-    setDownloads(json);
+    const json: Download[] = JSON.parse(d);
+    console.log('refresh');
+    setDownloads(json.map((a) => ({ ...a, checked: false })));
+  };
+  const parseAndsyncRealtimeProgress = (d: any) => {
+    const json: Download[] = JSON.parse(d);
+    console.log('realtime');
+    setDownloads((prev) => {
+      // console.log(json.map((a) => a.speed).join(','));
+
+      const updated = prev.map((d) => {
+        const jsonF = json.find((a) => a.id === d.id);
+        return d.id === jsonF?.id
+          ? { ...d, speed: jsonF.speed, percentage: jsonF.percentage }
+          : d;
+      });
+      return updated;
+    });
   };
   React.useEffect(() => {
     window.electronAPI.onDownloadCompleted(async (d: string) => {
       parseAndSetDownloads(d);
+    });
+    window.electronAPI.onDownloadRealtimeSync(async (d: string) => {
+      parseAndsyncRealtimeProgress(d);
     });
     (async () => {
       const getDownloads = await window.electronAPI.getDownloads();

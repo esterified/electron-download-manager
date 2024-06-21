@@ -1,9 +1,10 @@
 import { IpcMainEvent } from 'electron';
 import prisma from './prisma';
-import { downloadTasks } from './downloadQueue';
+import { downloadTasks, removeDownloadTaskbyIds } from './downloadQueue';
 import { GlobalMainWindow } from '../main';
 import { getAllDownloads } from '../utils/download';
 import { DownloadStatus } from './types';
+import _initDownload from './_initDownload';
 
 //arrow function
 export const deleteDownloadHandler = async (
@@ -17,7 +18,7 @@ export const deleteDownloadHandler = async (
       task.downloader?.stop();
     }
   });
-
+  removeDownloadTaskbyIds(ids);
   await prisma.download.deleteMany({
     where: {
       id: {
@@ -45,7 +46,7 @@ export const pauseDownloadHandler = async (
       task.downloader?.pause();
     }
   });
-
+  removeDownloadTaskbyIds(ids);
   await prisma.download.updateMany({
     where: {
       id: {
@@ -68,28 +69,17 @@ export const playDownloadHandler = async (
   ids: number[]
 ) => {
   console.log(ids);
-  if (!downloadTasks.length) return;
-  ids.forEach((id) => {
-    const task = downloadTasks.find((d) => d.id === id);
-    if (task) {
-      task.downloader?.resume();
-    }
-  });
 
-  await prisma.download.updateMany({
-    where: {
-      id: {
-        in: ids,
+  ids.forEach(async (id) => {
+    const dl = await prisma.download.findFirst({
+      where: {
+        id,
       },
-    },
-    data: {
-      status: 'downloading' as DownloadStatus,
-    },
+    });
+    await _initDownload(dl.url, {
+      action: 'resume',
+      id: dl.id,
+      filename: dl.filename,
+    });
   });
-  console.log(`download ID:${ids} Deleted`);
-  const allDownloads = await getAllDownloads();
-  GlobalMainWindow?.webContents.send(
-    'downloadCompleted',
-    JSON.stringify(allDownloads)
-  );
 };

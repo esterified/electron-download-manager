@@ -1,14 +1,14 @@
-import { BrowserWindow, webContents } from 'electron';
-import prisma from './prisma';
+import { BrowserWindow } from 'electron';
 import { downloadTasks } from './downloadQueue';
-import { GlobalSchedulerInstance, GlobalMainWindow } from '../main';
-import { getAllDownloads } from '../utils/download';
+import { GlobalSchedulerInstance } from '../main';
+import { getDownloadsbyIds } from '../utils/download';
 
 export class Scheduler {
   public callback: () => Promise<void>;
   private timeout: NodeJS.Timeout | null;
   private running: boolean;
   public delay: number;
+  private startTime: number;
   constructor(callback: () => Promise<void>) {
     this.callback = callback;
     this.delay = 2000;
@@ -22,13 +22,13 @@ export class Scheduler {
     // clear timeout if exists
     this.stop();
     this.running = true;
+    this.startTime = Date.now();
     const matchTime = async () => {
       await this.callback();
       if (this.running === false) {
         return;
       }
       this.timeout = setTimeout(matchTime, this.delay);
-      // console.log(this.timeout);
     };
     matchTime();
   }
@@ -60,9 +60,12 @@ export const downloadProcessorCron = (mainWindow: BrowserWindow) => {
       'running callback length: ' + downloadTasks.length + ' >_',
       new Date()
     );
-    const allDownloads = await getAllDownloads();
+
+    const allDownloads = await getDownloadsbyIds(
+      downloadTasks.map((a) => a.id)
+    );
     mainWindow.webContents.send(
-      'downloadCompleted',
+      'downloadRealtimeSync',
       JSON.stringify(allDownloads)
     );
   };
