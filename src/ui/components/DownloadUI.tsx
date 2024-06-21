@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { GiHamburgerMenu } from 'react-icons/gi';
+
 import { DownloadList } from './DownloadList';
 import React, { useCallback, useEffect } from 'react';
-import { IDownloadsUI } from '../../lib/types';
+import { DownloadStatus, IDownloadsUI } from '../../lib/types';
 import { IoPlayOutline } from 'react-icons/io5';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { LuFolderDown } from 'react-icons/lu';
@@ -113,22 +115,32 @@ export default function DownloadUI() {
   }, []);
   return (
     <div>
-      <div className='bg-header px-2 py-2 inline-flex gap-2 border-b-2 border-black w-full'>
-        <MyModal url={url} setUrl={React.useCallback(setUrl, [setUrl])} />
-        {buttonMarkUp.map(({ id, icon }, i) => (
-          <button
-            key={i}
-            className={`btn disabled:opacity-20 disabled:hover:bg-[unset] hover:bg-gray-700`}
-            disabled={!downloadIsChecked}
-            onClick={async () => {
-              runBulkOperation(id);
+      <div className='bg-header px-2 py-0.5 flex flex-row flex-nowrap items-center justify-center w-full'>
+        <span> Electron Download Manager</span>
+      </div>
+      <div className='bg-header px-2 py-2 flex flex-row flex-nowrap items-center justify-between gap-2 border-b-2 border-black w-full'>
+        <div className='inline-flex'>
+          <MyModal url={url} setUrl={React.useCallback(setUrl, [setUrl])} />
+          {buttonMarkUp.map(({ id, icon }, i) => (
+            <button
+              key={i}
+              className={`btn disabled:opacity-20 disabled:hover:bg-[unset] hover:bg-gray-700`}
+              disabled={!downloadIsChecked}
+              onClick={async () => {
+                runBulkOperation(id);
 
-              // alert();
-            }}
-          >
-            {icon}
+                // alert();
+              }}
+            >
+              {icon}
+            </button>
+          ))}
+        </div>
+        <div>
+          <button className='align-middle'>
+            <GiHamburgerMenu size={'22px'} />
           </button>
-        ))}
+        </div>
       </div>
       {/* add a table to show a list of download urls */}
       <div className='pills p-1'>
@@ -136,9 +148,12 @@ export default function DownloadUI() {
       </div>
       <div className='p-1'>
         <DownloadList
-          downloads={downloads}
+          downloads={downloads as (IDownloadsUI & { status: DownloadStatus })[]}
           setDownloads={useCallback(setDownloads, [setDownloads])}
         />
+      </div>
+      <div className='text-right footer bg-header px-2 py-2 gap-2 border-t-2 border-gray-800 w-full fixed bottom-0 left-0'>
+        caret bar
       </div>
     </div>
   );

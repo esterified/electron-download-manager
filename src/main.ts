@@ -14,6 +14,7 @@ export let GlobalSchedulerInstance: InstanceType<typeof Scheduler> | null =
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
+    titleBarStyle: 'hidden',
     width: 1440,
     height: 768,
     webPreferences: {

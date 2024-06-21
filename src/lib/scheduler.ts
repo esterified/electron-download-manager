@@ -11,7 +11,7 @@ export class Scheduler {
   private startTime: number;
   constructor(callback: () => Promise<void>) {
     this.callback = callback;
-    this.delay = 2000;
+    this.delay = 1000;
     this.running = false;
   }
 

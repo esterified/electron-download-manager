@@ -1,14 +1,15 @@
 import { Checkbox } from '@headlessui/react';
 import React, { useState } from 'react';
-import { IDownloadsUI } from '../../lib/types';
+import { DownloadStatus, IDownloadsUI } from '../../lib/types';
 import { twMerge } from 'tailwind-merge';
+import { FaFolder } from 'react-icons/fa';
 // import { MdCancel } from 'react-icons/md';
 
 export function DownloadList({
   downloads,
   setDownloads,
 }: {
-  downloads: IDownloadsUI[];
+  downloads: (IDownloadsUI & { status: DownloadStatus })[];
   setDownloads: (cb: (a: IDownloadsUI[]) => IDownloadsUI[]) => void;
 }) {
   // define a boolean state bulk actions
@@ -49,11 +50,10 @@ export function DownloadList({
       </svg>
     </Checkbox>,
     'Name',
-    'URL',
     'Status',
     'Percentage',
-    'Speed',
     'Size',
+    'Added',
   ];
 
   return (
@@ -117,25 +117,53 @@ export function DownloadList({
                   console.log('done');
                 }}
               >
-                [open]{' '}
+                <FaFolder size={18} />
               </button>
-              <span className='ms-2'>{it.filename}</span>
-            </td>
-            <td className='table_cells'>{it.url}</td>
-            <td className='table_cells'>{it.status.toUpperCase()}</td>
-            <td className='table_cells'>{`${it.percentage}%`}</td>
-            <td className='table_cells'>{`${it.speed}`}</td>
-            <td className='table_cells'>{`${it.filesize}`}</td>
-            {/* <td className='table_cells'>
-              <button
-                onClick={async () => {
-                  window.electronAPI.cancelDownloadLink(it.id);
+              <span
+                onDoubleClick={() => {
+                  console.log('object');
                 }}
-                className='btn inline-flex items-center'
+                className='ms-2'
               >
-                <MdCancel size={18} />
-              </button>
-            </td> */}
+                {it.filename}
+              </span>
+            </td>
+            <td className='table_cells'>
+              <div className='w-full'>{it.status.toUpperCase()}</div>
+              {it.status === 'downloading' && (
+                <div className='text-center font-bold text-white'>
+                  {`${it.speed}`}
+                </div>
+              )}
+            </td>
+            <td className='table_cells'>
+              <div className='w-full bg-neutral-200 dark:bg-neutral-600'>
+                <div
+                  className={twMerge(
+                    it.status === 'paused'
+                      ? 'bg-yellow-500'
+                      : it.status === 'completed'
+                      ? 'bg-green-500'
+                      : 'bg-blue-500',
+                    'p-1 text-center text-xs font-bold leading-none text-white'
+                  )}
+                  style={{ width: `${it.percentage}%` }}
+                >
+                  {it.percentage}%
+                </div>
+              </div>
+            </td>
+            <td className='table_cells'>{`${it.filesize}`}</td>
+            <td className='table_cells'>
+              {new Date(it.createdAt).toLocaleDateString('en-US', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true,
+              })}
+            </td>
           </tr>
         ))}
       </tbody>
