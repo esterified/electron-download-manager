@@ -138,7 +138,7 @@ export function DownloadList({
               )}
             </td>
             <td className='table_cells'>
-              <div className='w-full bg-neutral-200 dark:bg-neutral-600'>
+              <div className='w-full bg-neutral-200 dark:bg-neutral-600 relative '>
                 <div
                   className={twMerge(
                     it.status === 'paused'
@@ -146,10 +146,11 @@ export function DownloadList({
                       : it.status === 'completed'
                       ? 'bg-green-500'
                       : 'bg-blue-500',
-                    'p-1 text-center text-xs font-bold leading-none text-white'
+                    'py-1 px-0 absolute left-0 top-0 h-full text-center text-xs font-bold leading-none text-white '
                   )}
                   style={{ width: `${it.percentage}%` }}
-                >
+                ></div>
+                <div className='text-center font-bold text-white relative left-0 top-0'>
                   {it.percentage}%
                 </div>
               </div>

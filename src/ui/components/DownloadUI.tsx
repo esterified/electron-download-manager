@@ -90,8 +90,6 @@ export default function DownloadUI() {
     const json: Download[] = JSON.parse(d);
     console.log('realtime');
     setDownloads((prev) => {
-      // console.log(json.map((a) => a.speed).join(','));
-
       const updated = prev.map((d) => {
         const jsonF = json.find((a) => a.id === d.id);
         return d.id === jsonF?.id

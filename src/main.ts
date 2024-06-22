@@ -3,6 +3,7 @@ import path from 'path';
 import { initIPCEvents } from './lib/ipcEvents';
 import { downloadProcessorCron, Scheduler } from './lib/scheduler';
 import { initGlobalSettings } from './lib/initGlobalSettings';
+import dockMenu from './menus/dockMenu';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -14,6 +15,7 @@ export let GlobalSchedulerInstance: InstanceType<typeof Scheduler> | null =
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
+    title: 'Download manager',
     width: 1440,
     height: 768,
     webPreferences: {
@@ -49,6 +51,7 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   initTray();
+  initDock();
   initIPCEvents();
   createWindow();
   initGlobalSettings();
@@ -78,16 +81,13 @@ const initTray = () => {
   const icon = nativeImage.createFromDataURL(
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAARdJREFUOE+lkjtKBUEQRc8VQw1ExMBfIC7ABbzATExFlyCGrkRM5e3AxEQMTTR2BQriD0TBQMzEkivV4JuZfgxYSUH37XPr0+Kfoa73ETEJzAPOji/gRZLzSNQAC8AJsJTqR2BXknMvwApw2QAMJN31BdjZAIMc94ABzvUKImIGmAZKC4upfgZ2ALfwIem9UEZmEBHrwBGwBsw1hvgK3AAHkq47AT6MiC3gGCjuRfsE7Es6+9tDbQubCVlO8UM+Pu81xKzEkCFgkz1JrcfWdVZQXCJiwxpJF03n2hBngSmPIgXfmScy2/BT0lsLEBG+PAS28+t2mfprn+Ymfk2aaxwAq0BxbkJcyS1wJakNqPU57nzsEPsAfwCE71IRtv4GYwAAAABJRU5ErkJggg=='
   );
-
   const tray = new Tray(icon);
+  tray.setToolTip('Electron Download Manager');
+  tray.setContextMenu(dockMenu);
+};
 
-  const contextMenu = Menu.buildFromTemplate([
-    { label: 'Show main window', type: 'normal' },
-    { type: 'separator' },
-    { label: 'About Electron Download Manager', type: 'normal' },
-    { label: 'Quit', type: 'normal', click: () => app.quit() },
-  ]);
-
-  tray.setToolTip('This is my application.');
-  tray.setContextMenu(contextMenu);
+const initDock = () => {
+  const icon = nativeImage.createFromPath('src/images/dock.png');
+  app.dock.setMenu(dockMenu);
+  app.dock.setIcon(icon);
 };

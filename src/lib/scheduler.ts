@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, app } from 'electron';
 import { downloadTasks } from './downloadQueue';
 import { GlobalSchedulerInstance } from '../main';
 import { getDownloadsbyIds } from '../utils/download';
@@ -53,7 +53,10 @@ export const downloadProcessorCron = (mainWindow: BrowserWindow) => {
         'Exiting Scheduler...',
         GlobalSchedulerInstance.getRunningStatus()
       );
+      const bounceid = app.dock.bounce();
       GlobalSchedulerInstance.stop();
+      await new Promise((r) => setTimeout(r, 2000));
+      if (bounceid) app.dock.cancelBounce(bounceid);
       return;
     }
     console.log(
