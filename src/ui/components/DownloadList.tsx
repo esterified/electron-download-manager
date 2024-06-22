@@ -110,6 +110,7 @@ export function DownloadList({
               <button
                 onClick={async () => {
                   console.log(it.filepath);
+                  if (!it.filepath) return;
                   const result = await window.electronAPI.openDir(
                     ['openFile'],
                     it.filepath.replace(it.filename, '')

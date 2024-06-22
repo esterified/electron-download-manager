@@ -2,6 +2,7 @@ import { ipcRenderer, OpenDialogOptions } from 'electron';
 
 export const ipcRendererEventsElectronApi = {
   addDownloadLink: (url: string) => ipcRenderer.send('addDownloadLink', url),
+  showSettingsMenu: (url?: string) => ipcRenderer.send('showSettingsMenu', url),
   getDownloads: (url?: string) => ipcRenderer.invoke('getDownloads', url),
   cancelDownloadLink: (id: number) =>
     ipcRenderer.invoke('cancelDownloadLink', id),

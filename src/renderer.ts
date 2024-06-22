@@ -31,11 +31,6 @@ import './ui/styles/index.css';
 console.log(
   '👋 This message is being logged by "renderer.ts", included via Vite'
 );
-// renderer
-window.addEventListener('contextmenu', (e) => {
-  e.preventDefault();
-  ipcRenderer.send('show-context-menu');
-});
+
 // Add this to the end of the existing file
 import './ui/root';
-import { ipcRenderer } from 'electron';

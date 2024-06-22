@@ -115,11 +115,11 @@ export default function DownloadUI() {
   }, []);
   return (
     <div>
-      <div className='bg-header px-2 py-0.5 flex flex-row flex-nowrap items-center justify-center w-full'>
+      <div className='draggable bg-header px-2 py-0.5 flex flex-row flex-nowrap items-center justify-center w-full'>
         <span> Electron Download Manager</span>
       </div>
-      <div className='bg-header px-2 py-2 flex flex-row flex-nowrap items-center justify-between gap-2 border-b-2 border-black w-full'>
-        <div className='inline-flex'>
+      <div className='draggable bg-header px-2 py-2 flex flex-row flex-nowrap items-center justify-between gap-2 border-b-2 border-black w-full'>
+        <div className='no_draggable inline-flex'>
           <MyModal url={url} setUrl={React.useCallback(setUrl, [setUrl])} />
           {buttonMarkUp.map(({ id, icon }, i) => (
             <button
@@ -136,8 +136,13 @@ export default function DownloadUI() {
             </button>
           ))}
         </div>
-        <div>
-          <button className='align-middle'>
+        <div className='no_draggable'>
+          <button
+            className='align-middle'
+            onClick={() => {
+              window.electronAPI.showSettingsMenu();
+            }}
+          >
             <GiHamburgerMenu size={'22px'} />
           </button>
         </div>

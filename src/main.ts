@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu, nativeImage, Tray } from 'electron';
 import path from 'path';
 import { initIPCEvents } from './lib/ipcEvents';
 import { downloadProcessorCron, Scheduler } from './lib/scheduler';
@@ -14,7 +14,6 @@ export let GlobalSchedulerInstance: InstanceType<typeof Scheduler> | null =
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    titleBarStyle: 'hidden',
     width: 1440,
     height: 768,
     webPreferences: {
@@ -22,6 +21,7 @@ const createWindow = () => {
       //! enable for worker multithreading => https://www.electronjs.org/docs/latest/tutorial/multithreading
       // nodeIntegrationInWorker: true,
     },
+    titleBarStyle: 'hidden',
   });
 
   console.log(
@@ -48,6 +48,7 @@ const createWindow = () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
+  initTray();
   initIPCEvents();
   createWindow();
   initGlobalSettings();
@@ -72,3 +73,21 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+
+const initTray = () => {
+  const icon = nativeImage.createFromDataURL(
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAARdJREFUOE+lkjtKBUEQRc8VQw1ExMBfIC7ABbzATExFlyCGrkRM5e3AxEQMTTR2BQriD0TBQMzEkivV4JuZfgxYSUH37XPr0+Kfoa73ETEJzAPOji/gRZLzSNQAC8AJsJTqR2BXknMvwApw2QAMJN31BdjZAIMc94ABzvUKImIGmAZKC4upfgZ2ALfwIem9UEZmEBHrwBGwBsw1hvgK3AAHkq47AT6MiC3gGCjuRfsE7Es6+9tDbQubCVlO8UM+Pu81xKzEkCFgkz1JrcfWdVZQXCJiwxpJF03n2hBngSmPIgXfmScy2/BT0lsLEBG+PAS28+t2mfprn+Ymfk2aaxwAq0BxbkJcyS1wJakNqPU57nzsEPsAfwCE71IRtv4GYwAAAABJRU5ErkJggg=='
+  );
+
+  const tray = new Tray(icon);
+
+  const contextMenu = Menu.buildFromTemplate([
+    { label: 'Show main window', type: 'normal' },
+    { type: 'separator' },
+    { label: 'About Electron Download Manager', type: 'normal' },
+    { label: 'Quit', type: 'normal', click: () => app.quit() },
+  ]);
+
+  tray.setToolTip('This is my application.');
+  tray.setContextMenu(contextMenu);
+};

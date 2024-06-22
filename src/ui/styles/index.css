@@ -11,7 +11,7 @@
 
 @layer base {
   body {
-    -webkit-app-region: drag;
+    /* -webkit-app-region: drag; */
     color: var(--color-text);
     background: var(--color-dark-gray);
     @apply text-sm;
@@ -19,6 +19,12 @@
 }
 
 @layer components {
+  .draggable {
+    -webkit-app-region: drag;
+  }
+  .no_draggable {
+    -webkit-app-region: no-drag;
+  }
   .bg-header {
     background: var(--color-dark-header);
   }
