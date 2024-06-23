@@ -18,4 +18,6 @@ export const ipcRendererEventsElectronApi = {
     ipcRenderer.on('downloadCompleted', (_event, v) => callback(v)),
   onDownloadRealtimeSync: (callback: (v: string) => void) =>
     ipcRenderer.on('downloadRealtimeSync', (_event, v) => callback(v)),
+  onOpenSettings: (callback: (v: string) => void) =>
+    ipcRenderer.on('openSettings', (_event, v) => callback(v)),
 };

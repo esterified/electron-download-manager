@@ -38,7 +38,7 @@ const buttonMarkUp = [
   },
 ];
 type ButtonMarkup = typeof buttonMarkUp;
-export default function DownloadUI() {
+export default function Home() {
   const [url, setUrl] = React.useState(defautlurl);
   const [downloads, setDownloads] = React.useState<IDownloadsUI[]>([]);
   const [highlightIndex, sethighlightIndex] = React.useState<number | null>(

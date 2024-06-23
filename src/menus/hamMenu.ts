@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { Menu, app } from 'electron';
+import { GlobalMainWindow } from '../main';
 
 export default Menu.buildFromTemplate([
   {
@@ -30,7 +31,9 @@ export default Menu.buildFromTemplate([
   { type: 'separator' },
   {
     label: 'Preferences...',
-    click: () => {},
+    click: () => {
+      GlobalMainWindow.webContents.send('openSettings');
+    },
   },
   { type: 'separator' },
   {
