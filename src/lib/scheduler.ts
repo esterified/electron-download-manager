@@ -1,7 +1,7 @@
-import { BrowserWindow, app } from 'electron';
-import { downloadTasks } from './downloadQueue';
-import { GlobalSchedulerInstance } from '../main';
-import { getDownloadsbyIds } from '../utils/download';
+import { BrowserWindow, app } from "electron";
+import { downloadTasks } from "./downloadQueue";
+import { GlobalSchedulerInstance } from "../main";
+import { getDownloadsbyIds } from "../utils/download";
 
 export class Scheduler {
   public callback: () => Promise<void>;
@@ -46,12 +46,12 @@ export const downloadProcessorCron = (mainWindow: BrowserWindow) => {
   return async () => {
     if (!downloadTasks.length) {
       console.log(
-        'No download tasks length: ' + downloadTasks.length + ' >_',
-        new Date()
+        "No download tasks length: " + downloadTasks.length + " >_",
+        new Date(),
       );
       console.log(
-        'Exiting Scheduler...',
-        GlobalSchedulerInstance.getRunningStatus()
+        "Exiting Scheduler...",
+        GlobalSchedulerInstance.getRunningStatus(),
       );
       const bounceid = app.dock.bounce();
       GlobalSchedulerInstance.stop();
@@ -60,16 +60,16 @@ export const downloadProcessorCron = (mainWindow: BrowserWindow) => {
       return;
     }
     console.log(
-      'running callback length: ' + downloadTasks.length + ' >_',
-      new Date()
+      "running callback length: " + downloadTasks.length + " >_",
+      new Date(),
     );
 
     const allDownloads = await getDownloadsbyIds(
-      downloadTasks.map((a) => a.id)
+      downloadTasks.map((a) => a.id),
     );
     mainWindow.webContents.send(
-      'downloadRealtimeSync',
-      JSON.stringify(allDownloads)
+      "downloadRealtimeSync",
+      JSON.stringify(allDownloads),
     );
   };
 };

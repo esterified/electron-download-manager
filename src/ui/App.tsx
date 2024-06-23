@@ -1,25 +1,25 @@
-import Home from './components/Home';
-import React, { createContext, useEffect, useState } from 'react';
-import { PageContext } from './components/Contexts';
-import { Preferences } from './components/Preferences';
+import Home from "./components/Home";
+import React, { useEffect, useState } from "react";
+import { PageContext } from "./components/Contexts";
+import { Preferences } from "./components/Preferences";
+import { TPages } from "../lib/types";
 // export react component
 export default function App() {
-  const [page, setPage] = useState<'home' | 'setting'>('home');
+  const [page, setPage] = useState<TPages>("home");
 
   useEffect(() => {
     window.electronAPI.onOpenSettings(() => {
-      setPage('setting');
+      setPage("setting");
     });
   }, []);
 
   return (
     <>
       <PageContext.Provider value={{ page, setPage }}>
-        {page === 'setting' ? (
-          <Preferences />
-        ) : page === 'home' ? (
+        <div className="relative h-[100vh] w-[100vw] overflow-hidden">
           <Home />
-        ) : null}
+          <Preferences />
+        </div>
       </PageContext.Provider>
     </>
   );

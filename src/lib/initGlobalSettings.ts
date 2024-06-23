@@ -1,13 +1,13 @@
-import prisma from './prisma';
+import prisma from "./prisma";
 
 export const initGlobalSettings = async () => {
   const settingExist = await prisma.setting.findFirst();
   if (!settingExist)
     await prisma.setting.create({
       data: {
-        globalDirectory: './downloads',
+        globalDirectory: "./downloads",
       },
     });
 
-  console.log('initGlobalSettings');
+  console.log("initGlobalSettings");
 };

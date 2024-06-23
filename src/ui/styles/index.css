@@ -23,7 +23,7 @@
     @apply w-full;
   }
   .btn {
-    @apply py-2 px-2 rounded;
+    @apply rounded px-1.5 py-1.5;
   }
   .btn-primary {
     @apply btn bg-blue-500 text-white hover:bg-blue-400;
@@ -40,6 +40,9 @@
 }
 
 @layer utilities {
+  .bg_native {
+    background: var(--color-dark-gray);
+  }
   .draggable {
     -webkit-app-region: drag;
   }

@@ -1,15 +1,15 @@
-import { IpcMainEvent } from 'electron';
-import prisma from './prisma';
-import { downloadTasks, removeDownloadTaskbyIds } from './downloadQueue';
-import { GlobalMainWindow } from '../main';
-import { getAllDownloads } from '../utils/download';
-import { DownloadStatus } from './types';
-import _initDownload from './_initDownload';
+import { IpcMainEvent } from "electron";
+import prisma from "./prisma";
+import { downloadTasks, removeDownloadTaskbyIds } from "./downloadQueue";
+import { GlobalMainWindow } from "../main";
+import { getAllDownloads } from "../utils/download";
+import { DownloadStatus } from "./types";
+import _initDownload from "./_initDownload";
 
 //arrow function
 export const deleteDownloadHandler = async (
   event: IpcMainEvent,
-  ids: number[]
+  ids: number[],
 ) => {
   console.log(ids);
   ids.forEach((id) => {
@@ -29,14 +29,14 @@ export const deleteDownloadHandler = async (
   console.log(`download ID:${ids} Deleted`);
   const allDownloads = await getAllDownloads();
   GlobalMainWindow.webContents.send(
-    'downloadCompleted',
-    JSON.stringify(allDownloads)
+    "downloadCompleted",
+    JSON.stringify(allDownloads),
   );
 };
 
 export const pauseDownloadHandler = async (
   event: IpcMainEvent,
-  ids: number[]
+  ids: number[],
 ) => {
   console.log(ids);
   if (!downloadTasks.length) return;
@@ -54,19 +54,19 @@ export const pauseDownloadHandler = async (
       },
     },
     data: {
-      status: 'paused' as DownloadStatus,
+      status: "paused" as DownloadStatus,
     },
   });
   console.log(`download ID:${ids} Deleted`);
   const allDownloads = await getAllDownloads();
   GlobalMainWindow?.webContents.send(
-    'downloadCompleted',
-    JSON.stringify(allDownloads)
+    "downloadCompleted",
+    JSON.stringify(allDownloads),
   );
 };
 export const playDownloadHandler = async (
   event: IpcMainEvent,
-  ids: number[]
+  ids: number[],
 ) => {
   console.log(ids);
 
@@ -77,7 +77,7 @@ export const playDownloadHandler = async (
       },
     });
     await _initDownload(dl.url, {
-      action: 'resume',
+      action: "resume",
       id: dl.id,
       filename: dl.filename,
     });

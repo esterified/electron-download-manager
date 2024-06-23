@@ -1,4 +1,4 @@
-import { IDownloadTask } from './types';
+import { IDownloadTask } from "./types";
 
 // Memory based queue
 export const downloadTasks: IDownloadTask[] = [];

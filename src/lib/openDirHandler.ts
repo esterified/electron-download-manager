@@ -1,12 +1,12 @@
-import { IpcMainEvent, OpenDialogOptions, dialog, shell } from 'electron';
+import { IpcMainEvent, OpenDialogOptions, dialog, shell } from "electron";
 
 export const openDirHandler = async (
   event: IpcMainEvent,
-  props: OpenDialogOptions['properties'],
-  defaultPath?: string
+  props: OpenDialogOptions["properties"],
+  defaultPath?: string,
 ) => {
   const result = await dialog.showOpenDialog({
-    title: 'Choose Folder',
+    title: "Choose Folder",
     properties: props,
     defaultPath,
   });

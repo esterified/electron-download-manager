@@ -1,6 +1,6 @@
-import { Download } from '@prisma/client';
-import prisma from '../lib/prisma';
-import { DownloadStatus } from '../lib/types';
+import { Download } from "@prisma/client";
+import prisma from "../lib/prisma";
+import { DownloadStatus } from "../lib/types";
 
 export const updateDownload = async ({
   id,
@@ -20,7 +20,7 @@ export const getAllDownloads = async () => {
   const download = await prisma.download.findMany({
     take: 50,
     orderBy: {
-      createdAt: 'desc',
+      createdAt: "desc",
     },
   });
   return download as Download[];

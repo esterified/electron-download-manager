@@ -1,12 +1,12 @@
-import { app, BrowserWindow, ipcMain, Menu, nativeImage, Tray } from 'electron';
-import path from 'path';
-import { initIPCEvents } from './lib/ipcEvents';
-import { downloadProcessorCron, Scheduler } from './lib/scheduler';
-import { initGlobalSettings } from './lib/initGlobalSettings';
-import dockMenu from './menus/dockMenu';
+import { app, BrowserWindow, ipcMain, Menu, nativeImage, Tray } from "electron";
+import path from "path";
+import { initIPCEvents } from "./lib/ipcEvents";
+import { downloadProcessorCron, Scheduler } from "./lib/scheduler";
+import { initGlobalSettings } from "./lib/initGlobalSettings";
+import dockMenu from "./menus/dockMenu";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) {
+if (require("electron-squirrel-startup")) {
   app.quit();
 }
 export let GlobalMainWindow: BrowserWindow | null = null;
@@ -15,32 +15,32 @@ export let GlobalSchedulerInstance: InstanceType<typeof Scheduler> | null =
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    title: 'Download manager',
+    title: "Download manager",
     width: 1440,
     height: 768,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, "preload.js"),
       //! enable for worker multithreading => https://www.electronjs.org/docs/latest/tutorial/multithreading
       // nodeIntegrationInWorker: true,
     },
-    titleBarStyle: 'hidden',
+    titleBarStyle: "hidden",
   });
 
   console.log(
-    'MAIN_WINDOW_VITE_DEV_SERVER_URL',
-    MAIN_WINDOW_VITE_DEV_SERVER_URL
+    "MAIN_WINDOW_VITE_DEV_SERVER_URL",
+    MAIN_WINDOW_VITE_DEV_SERVER_URL,
   );
   // and load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
   } else {
     mainWindow.loadFile(
-      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
+      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`),
     );
   }
   GlobalMainWindow = mainWindow;
   GlobalSchedulerInstance = new Scheduler(
-    downloadProcessorCron(GlobalMainWindow)
+    downloadProcessorCron(GlobalMainWindow),
   );
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
@@ -49,7 +49,7 @@ const createWindow = () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', () => {
+app.on("ready", () => {
   initTray();
   initDock();
   initIPCEvents();
@@ -60,13 +60,13 @@ app.on('ready', () => {
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
     app.quit();
   }
 });
 
-app.on('activate', () => {
+app.on("activate", () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
@@ -79,15 +79,15 @@ app.on('activate', () => {
 
 const initTray = () => {
   const icon = nativeImage.createFromDataURL(
-    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAARdJREFUOE+lkjtKBUEQRc8VQw1ExMBfIC7ABbzATExFlyCGrkRM5e3AxEQMTTR2BQriD0TBQMzEkivV4JuZfgxYSUH37XPr0+Kfoa73ETEJzAPOji/gRZLzSNQAC8AJsJTqR2BXknMvwApw2QAMJN31BdjZAIMc94ABzvUKImIGmAZKC4upfgZ2ALfwIem9UEZmEBHrwBGwBsw1hvgK3AAHkq47AT6MiC3gGCjuRfsE7Es6+9tDbQubCVlO8UM+Pu81xKzEkCFgkz1JrcfWdVZQXCJiwxpJF03n2hBngSmPIgXfmScy2/BT0lsLEBG+PAS28+t2mfprn+Ymfk2aaxwAq0BxbkJcyS1wJakNqPU57nzsEPsAfwCE71IRtv4GYwAAAABJRU5ErkJggg=='
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAARdJREFUOE+lkjtKBUEQRc8VQw1ExMBfIC7ABbzATExFlyCGrkRM5e3AxEQMTTR2BQriD0TBQMzEkivV4JuZfgxYSUH37XPr0+Kfoa73ETEJzAPOji/gRZLzSNQAC8AJsJTqR2BXknMvwApw2QAMJN31BdjZAIMc94ABzvUKImIGmAZKC4upfgZ2ALfwIem9UEZmEBHrwBGwBsw1hvgK3AAHkq47AT6MiC3gGCjuRfsE7Es6+9tDbQubCVlO8UM+Pu81xKzEkCFgkz1JrcfWdVZQXCJiwxpJF03n2hBngSmPIgXfmScy2/BT0lsLEBG+PAS28+t2mfprn+Ymfk2aaxwAq0BxbkJcyS1wJakNqPU57nzsEPsAfwCE71IRtv4GYwAAAABJRU5ErkJggg==",
   );
   const tray = new Tray(icon);
-  tray.setToolTip('Electron Download Manager');
+  tray.setToolTip("Electron Download Manager");
   tray.setContextMenu(dockMenu);
 };
 
 const initDock = () => {
-  const icon = nativeImage.createFromPath('src/images/dock.png');
+  const icon = nativeImage.createFromPath("src/images/dock.png");
   app.dock.setMenu(dockMenu);
   app.dock.setIcon(icon);
 };
