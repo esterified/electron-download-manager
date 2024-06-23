@@ -12,6 +12,7 @@ import { FaRegCirclePause } from 'react-icons/fa6';
 import MyModal from './Modal';
 import { Button } from '@headlessui/react';
 import { Download } from '@prisma/client';
+import { Footer } from './Footer';
 
 const defautlurl = `http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`;
 const buttonMarkUp = [
@@ -40,7 +41,9 @@ type ButtonMarkup = typeof buttonMarkUp;
 export default function DownloadUI() {
   const [url, setUrl] = React.useState(defautlurl);
   const [downloads, setDownloads] = React.useState<IDownloadsUI[]>([]);
-
+  const [highlightIndex, sethighlightIndex] = React.useState<number | null>(
+    null
+  );
   const downloadIsChecked = downloads.some((d) => d.checked === true);
 
   const runBulkOperation = useCallback(
@@ -112,7 +115,7 @@ export default function DownloadUI() {
     })();
   }, []);
   return (
-    <div>
+    <div className='ec_container flex flex-col flex-nowrap'>
       <div className='draggable bg-header px-2 py-0.5 flex flex-row flex-nowrap items-center justify-center w-full'>
         <span> Electron Download Manager</span>
       </div>
@@ -146,18 +149,27 @@ export default function DownloadUI() {
         </div>
       </div>
       {/* add a table to show a list of download urls */}
-      <div className='pills p-1'>
-        <Button className='text-xs p-1 bg-slate-900'>All</Button>
+      <div className='m-1 border-gray-600 border flex-grow overflow-y-scroll no-scrollbar'>
+        <div className='pills p-1'>
+          <Button className='text-xs p-1 bg-slate-900'>All</Button>
+        </div>
+        <div className='p-1 '>
+          <DownloadList
+            downloads={
+              downloads as (IDownloadsUI & { status: DownloadStatus })[]
+            }
+            setDownloads={useCallback(setDownloads, [setDownloads])}
+            highlightIndex={highlightIndex}
+            sethighlightIndex={useCallback(sethighlightIndex, [
+              sethighlightIndex,
+            ])}
+          />
+        </div>
       </div>
-      <div className='p-1'>
-        <DownloadList
-          downloads={downloads as (IDownloadsUI & { status: DownloadStatus })[]}
-          setDownloads={useCallback(setDownloads, [setDownloads])}
-        />
-      </div>
-      <div className='text-right footer bg-header px-2 py-2 gap-2 border-t-2 border-gray-800 w-full fixed bottom-0 left-0'>
-        caret bar
-      </div>
+      <Footer
+        className=''
+        download={downloads[highlightIndex] as IDownloadsUI}
+      />
     </div>
   );
 }

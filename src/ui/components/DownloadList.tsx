@@ -8,14 +8,16 @@ import { FaFolder } from 'react-icons/fa';
 export function DownloadList({
   downloads,
   setDownloads,
+  highlightIndex,
+  sethighlightIndex,
 }: {
   downloads: (IDownloadsUI & { status: DownloadStatus })[];
   setDownloads: (cb: (a: IDownloadsUI[]) => IDownloadsUI[]) => void;
+  highlightIndex: number | null;
+  sethighlightIndex: (a: number | null) => void;
 }) {
   // define a boolean state bulk actions
   const [bulkActions, setBulkActions] = React.useState(false);
-
-  const [highlightIndex, sethighlightIndex] = useState<number | null>(null);
 
   // log something on state change of the bulk action
   React.useEffect(() => {
@@ -67,18 +69,18 @@ export function DownloadList({
           ))}
         </tr>
       </thead>
-      <tbody>
+      <tbody className=''>
         {downloads?.map((it, i) => (
           <tr
             key={i}
             className={twMerge(
-              'cursor-pointer',
+              'cursor-pointer border-x border-gray-600',
               highlightIndex === i &&
-                'border-2 border-[var(--color-light-blue)]'
+                'border-y-2 border-x-2 border-[var(--color-light-blue)]'
             )}
             onClick={() => sethighlightIndex(i)}
           >
-            <td className='table_cells'>
+            <td className='table_cells border-x-0'>
               {
                 <Checkbox
                   checked={it.checked || false}
@@ -106,11 +108,14 @@ export function DownloadList({
                 </Checkbox>
               }
             </td>
-            <td className='table_cells'>
+            <td className='table_cells border-x-0'>
               <button
+                className={'disabled:opacity-55 disabled:cursor-not-allowed'}
+                disabled={!it.filepath}
                 onClick={async () => {
                   console.log(it.filepath);
                   if (!it.filepath) return;
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
                   const result = await window.electronAPI.openDir(
                     ['openFile'],
                     it.filepath.replace(it.filename, '')
@@ -129,7 +134,7 @@ export function DownloadList({
                 {it.filename}
               </span>
             </td>
-            <td className='table_cells'>
+            <td className='table_cells border-x-0'>
               <div className='w-full'>{it.status.toUpperCase()}</div>
               {it.status === 'downloading' && (
                 <div className='text-center font-bold text-white'>
@@ -137,7 +142,7 @@ export function DownloadList({
                 </div>
               )}
             </td>
-            <td className='table_cells'>
+            <td className='table_cells border-x-0'>
               <div className='w-full bg-neutral-200 dark:bg-neutral-600 relative '>
                 <div
                   className={twMerge(
@@ -155,8 +160,8 @@ export function DownloadList({
                 </div>
               </div>
             </td>
-            <td className='table_cells'>{`${it.filesize}`}</td>
-            <td className='table_cells'>
+            <td className='table_cells border-x-0'>{`${it.filesize}`}</td>
+            <td className='table_cells border-x-0'>
               {new Date(it.createdAt).toLocaleDateString('en-US', {
                 day: '2-digit',
                 month: '2-digit',

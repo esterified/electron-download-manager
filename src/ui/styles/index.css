@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 :root {
-  --color-light-blue: rgb(17, 176, 255);
+  --color-light-blue: #11b0ff;
   --color-dark-header: rgb(16, 24, 28);
   --color-dark-black: #171c21;
   --color-dark-gray: #26292b;
@@ -11,7 +11,6 @@
 
 @layer base {
   body {
-    /* -webkit-app-region: drag; */
     color: var(--color-text);
     background: var(--color-dark-gray);
     @apply text-sm;
@@ -19,16 +18,10 @@
 }
 
 @layer components {
-  .draggable {
-    -webkit-app-region: drag;
+  .ec_container {
+    height: 100vh;
+    @apply w-full;
   }
-  .no_draggable {
-    -webkit-app-region: no-drag;
-  }
-  .bg-header {
-    background: var(--color-dark-header);
-  }
-
   .btn {
     @apply py-2 px-2 rounded;
   }
@@ -42,9 +35,27 @@
     @apply bg-gray-700;
   }
   .table_cells {
-    @apply border border-gray-500 px-2 py-2;
+    @apply border border-gray-600 px-2 py-2;
   }
 }
 
 @layer utilities {
+  .draggable {
+    -webkit-app-region: drag;
+  }
+  .no_draggable {
+    -webkit-app-region: no-drag;
+  }
+  .bg-header {
+    background: var(--color-dark-header);
+  }
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
 }
