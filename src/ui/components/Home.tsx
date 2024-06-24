@@ -10,7 +10,6 @@ import { LuFolderDown } from "react-icons/lu";
 import { FaRegCirclePause } from "react-icons/fa6";
 import MyModal from "./Modal";
 import { Button, Transition } from "@headlessui/react";
-import { Download } from "@prisma/client";
 import { Footer } from "./Footer";
 import { PageContext } from "./Contexts";
 
@@ -83,12 +82,12 @@ export default function Home() {
   );
 
   const parseAndSetDownloads = (d: any) => {
-    const json: Download[] = JSON.parse(d);
+    const json: IDownloadsUI[] = JSON.parse(d);
     console.log("refresh");
     setDownloads(json.map((a) => ({ ...a, checked: false })));
   };
   const parseAndsyncRealtimeProgress = (d: any) => {
-    const json: Download[] = JSON.parse(d);
+    const json: IDownloadsUI[] = JSON.parse(d);
     console.log("realtime");
     setDownloads((prev) => {
       const updated = prev.map((d) => {

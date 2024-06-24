@@ -13,6 +13,7 @@ export default defineConfig((env) => {
   const { forgeConfigSelf } = forgeEnv;
   const define = getBuildDefine(forgeEnv);
   const config: UserConfig = {
+    publicDir: "public",
     build: {
       lib: {
         entry: forgeConfigSelf.entry!,

@@ -9,6 +9,7 @@ export const builtins = [
 ];
 
 export const external = [
+  ".prisma/client/default",
   ...builtins,
   ...Object.keys(
     "dependencies" in pkg ? (pkg.dependencies as Record<string, unknown>) : {},
