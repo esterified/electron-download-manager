@@ -11,7 +11,6 @@ import {
 } from "@headlessui/react";
 import { Footer } from "./Footer";
 import { PageContext } from "./Contexts";
-
 export function Preferences() {
   const { page, setPage } = useContext(PageContext);
 

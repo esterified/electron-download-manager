@@ -5,6 +5,8 @@ import { bytesToSize } from "../utils/convert";
 import { getAllDownloads, updateDownload } from "../utils/download";
 import { downloadTasks } from "./downloadQueue";
 import prisma from "./prisma";
+import { app } from "electron";
+import { Loger } from "./loger";
 
 export default async (
   url: string,
@@ -13,10 +15,13 @@ export default async (
     | { action: "resume"; id: number; filename: string },
 ) => {
   console.log("addDownloadLink", url);
+  const appdatapath = app.getPath("downloads");
+  console.log("appdatapath", appdatapath);
+  Loger.log("appdatapath", appdatapath);
 
   const downloader = new DownloaderHelper(
     url,
-    "./downloads",
+    appdatapath,
     options.action == "start"
       ? {}
       : { fileName: options.filename, resumeIfFileExists: true },
