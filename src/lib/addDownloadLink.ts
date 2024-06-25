@@ -2,8 +2,10 @@ import { IpcMainEvent } from "electron";
 import path from "path";
 import { Worker } from "worker_threads";
 import _initDownload from "./_initDownload";
+import Logger from "electron-log";
 
 export const downloadHandler = async (event: IpcMainEvent, url: string) => {
+  Logger.info('Add downlaod Link ->', url);
   await _initDownload(url, { action: "start" });
 };
 
