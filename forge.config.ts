@@ -1,26 +1,42 @@
-import type { ForgeConfig } from '@electron-forge/shared-types';
-import { MakerSquirrel } from '@electron-forge/maker-squirrel';
-import { MakerZIP } from '@electron-forge/maker-zip';
-import { MakerDeb } from '@electron-forge/maker-deb';
-import { MakerRpm } from '@electron-forge/maker-rpm';
-import { AutoUnpackNativesPlugin } from '@electron-forge/plugin-auto-unpack-natives';
-import { WebpackPlugin } from '@electron-forge/plugin-webpack';
-import { FusesPlugin } from '@electron-forge/plugin-fuses';
-import { FuseV1Options, FuseVersion } from '@electron/fuses';
+import type { ForgeConfig } from "@electron-forge/shared-types";
+import { MakerSquirrel } from "@electron-forge/maker-squirrel";
+import { MakerZIP } from "@electron-forge/maker-zip";
+import { MakerDeb } from "@electron-forge/maker-deb";
+import { MakerRpm } from "@electron-forge/maker-rpm";
+import { MakerDMG } from "@electron-forge/maker-dmg";
+import { AutoUnpackNativesPlugin } from "@electron-forge/plugin-auto-unpack-natives";
+import { WebpackPlugin } from "@electron-forge/plugin-webpack";
+import { FusesPlugin } from "@electron-forge/plugin-fuses";
+import { FuseV1Options, FuseVersion } from "@electron/fuses";
 
-import { mainConfig } from './webpack.main.config';
-import { rendererConfig } from './webpack.renderer.config';
+import { mainConfig } from "./webpack.main.config";
+import { rendererConfig } from "./webpack.renderer.config";
+import { APP_NAME } from "./config";
 
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
-    extraResource: [
-      "./node_modules/.prisma",
-      "./prisma/mydb.db"
-    ]
+    icon: "src/images/icons/dock",
+    extraResource: ["./node_modules/.prisma", "./prisma/mydb.db"],
   },
   rebuildConfig: {},
-  makers: [new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],
+  makers: [
+    new MakerSquirrel({
+      iconUrl: "",
+      setupIcon: "src/images/icons/dock.ico",
+    }),
+    new MakerZIP({}, ["darwin"]),
+    new MakerRpm({}),
+    new MakerDeb({
+      options: {
+        icon: "src/images/icons/dock.png",
+      },
+    }),
+    new MakerDMG({
+      name: APP_NAME,
+      icon: "src/images/icons/dock.icns",
+    }),
+  ],
   plugins: [
     new AutoUnpackNativesPlugin({}),
     new WebpackPlugin({
@@ -29,11 +45,11 @@ const config: ForgeConfig = {
         config: rendererConfig,
         entryPoints: [
           {
-            html: './src/index.html',
-            js: './src/renderer.ts',
-            name: 'main_window',
+            html: "./src/index.html",
+            js: "./src/renderer.ts",
+            name: "main_window",
             preload: {
-              js: './src/preload.ts',
+              js: "./src/preload.ts",
             },
           },
         ],
