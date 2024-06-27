@@ -16,7 +16,7 @@
     "db:init": "prisma migrate dev --schema prisma/schema.prisma --name init",
     "prisma": "prisma",
     "postinstall": "yarn db:init",
-    "log:prod": "cat ~/Library/Logs/my-new-app/main.log"
+    "log:prod": "cat ~/Library/Logs/electron-download-manager/main.log"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.4.0",
