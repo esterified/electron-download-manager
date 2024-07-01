@@ -1,4 +1,13 @@
-import { app, BrowserWindow, ipcMain, Menu, nativeImage, Tray } from "electron";
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  Menu,
+  nativeImage,
+  net,
+  protocol,
+  Tray,
+} from "electron";
 import path from "path";
 import { initIPCEvents } from "./lib/ipcEvents";
 import { downloadProcessorCron, Scheduler } from "./lib/scheduler";
@@ -29,7 +38,7 @@ const createWindow = (): void => {
     height: 768,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
-      //! enable for worker multithreading => https://www.electronjs.org/docs/latest/tutorial/multithreading
+      // enable for worker multithreading => https://www.electronjs.org/docs/latest/tutorial/multithreading
       // nodeIntegrationInWorker: true,
     },
     titleBarStyle: "hidden",
@@ -50,6 +59,10 @@ const createWindow = (): void => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
+  protocol.handle("media", function (req) {
+    const pathToMedia = new URL(req.url).pathname;
+    return net.fetch(`file://${pathToMedia}`);
+  });
   initPrisma();
   initTray();
   initDock();
@@ -103,3 +116,15 @@ const initPrisma = () => {
     console.log("exec error:: ", error?.message);
   }
 };
+
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: "media",
+    privileges: {
+      secure: true,
+      supportFetchAPI: true,
+      bypassCSP: true,
+      stream: true,
+    },
+  },
+]);

@@ -34,9 +34,17 @@ export const Footer = ({
               &#10005;
             </button>
           </div>
-          <div className="body">
-            <img src={download?.filepath || ""} alt="" />
-          </div>
+          {open && (
+            <div className="body">
+              {download?.filepath && (
+                <video
+                  src={"media://" + download?.filepath || ""}
+                  controls
+                  width="250"
+                />
+              )}
+            </div>
+          )}
         </div>
         <div className="bg-header w-full border-t-2 border-gray-800 px-2 py-2 text-right">
           <div
@@ -45,18 +53,20 @@ export const Footer = ({
               "w-full",
             )}
           >
-            <span className="mr-1"> {download?.filename}</span>
             <button
-              className="align-middle"
+              className="inline-flex align-middle"
               onClick={() => {
                 setOpen(!open);
               }}
             >
-              {open ? (
-                <PiCaretUpBold className="text-n_blue" size={20} />
-              ) : (
-                <PiCaretDownBold className="text-n_blue" size={20} />
-              )}
+              <span className="mr-1"> {download?.filename}</span>
+              <span>
+                {open ? (
+                  <PiCaretUpBold className="text-n_blue" size={20} />
+                ) : (
+                  <PiCaretDownBold className="text-n_blue" size={20} />
+                )}
+              </span>
             </button>
           </div>
         </div>
