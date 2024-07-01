@@ -4,7 +4,13 @@ export const openDirHandler = async (
   event: IpcMainEvent,
   props: OpenDialogOptions["properties"],
   defaultPath?: string,
+  openFile?: boolean,
 ) => {
+  if (openFile) {
+    console.log("openFile");
+    shell.openPath(defaultPath);
+    return defaultPath;
+  }
   const result = await dialog.showOpenDialog({
     title: "Choose Folder",
     properties: props,

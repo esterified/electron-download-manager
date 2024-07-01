@@ -37,11 +37,30 @@ export const Footer = ({
           {open && (
             <div className="body">
               {download?.filepath && (
-                <video
-                  src={"media://" + download?.filepath || ""}
-                  controls
-                  width="250"
-                />
+                <div className="inline-flex">
+                  <div>
+                    <img
+                      src={"media://" + download?.filepath || ""}
+                      width="250"
+                    />
+                  </div>
+                  <div className="flex-col px-3 py-2">
+                    <div>{download?.filename}</div>
+                    <a
+                      className="text-n_blue cursor-pointer"
+                      onClick={async () => {
+                        const result = await window.electronAPI.openDir(
+                          ["openFile"],
+                          download.filepath,
+                          true,
+                        );
+                        console.log("done", result);
+                      }}
+                    >
+                      {download?.filepath}
+                    </a>
+                  </div>
+                </div>
               )}
             </div>
           )}
@@ -54,7 +73,7 @@ export const Footer = ({
             )}
           >
             <button
-              className="inline-flex align-middle"
+              className="inline-flex align-middle text-[nblue]"
               onClick={() => {
                 setOpen(!open);
               }}

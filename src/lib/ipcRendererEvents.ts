@@ -7,8 +7,11 @@ export const ipcRendererEventsElectronApi = {
   getDownloads: (url?: string) => ipcRenderer.invoke("getDownloads", url),
   cancelDownloadLink: (id: number) =>
     ipcRenderer.invoke("cancelDownloadLink", id),
-  openDir: (props: OpenDialogOptions["properties"], defaultPath?: string) =>
-    ipcRenderer.invoke("openDir", props, defaultPath),
+  openDir: (
+    props: OpenDialogOptions["properties"],
+    defaultPath?: string,
+    openFile?: boolean,
+  ) => ipcRenderer.invoke("openDir", props, defaultPath, openFile),
   bulkDeleteDownload: (ids: number[]) =>
     ipcRenderer.send("bulkDeleteDownload", ids),
   bulkPauseDownload: (ids: number[]) =>
