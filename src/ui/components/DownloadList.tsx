@@ -23,7 +23,8 @@ export function DownloadList({
     const _r_filesize = sizeToBytes(filesize);
     const _filesize = (_r_filesize * (100 - progress)) / 100;
     const seconds = _filesize / _speed;
-    return convertSeconds(seconds);
+    const res = convertSeconds(seconds);
+    return res ? `ETA: ${res}` : "";
   };
   React.useEffect(() => {
     setDownloads((prev: IDownloadsUI[]) => {
@@ -145,9 +146,7 @@ export function DownloadList({
                 <div className="text-left text-white">
                   <span className="font-bold">{`${it.speed}`}</span>
                   <span className="ml-4 font-bold">
-                    {getETA(it.speed, it.filesize, +it.percentage)
-                      ? "ETA: " + getETA(it.speed, it.filesize, +it.percentage)
-                      : ""}
+                    {getETA(it.speed, it.filesize, +it.percentage)}
                   </span>
                 </div>
               )}
