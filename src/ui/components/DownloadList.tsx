@@ -3,8 +3,9 @@ import React from "react";
 import { DownloadStatus, IDownloadsUI } from "../../lib/types";
 import { twMerge } from "tailwind-merge";
 import { FaFolder } from "react-icons/fa";
+import { convertSeconds, sizeToBytes } from "../../utils/convert";
+// eslint-disable-next-line import/no-unresolved
 // import { MdCancel } from 'react-icons/md';
-
 export function DownloadList({
   downloads,
   setDownloads,
@@ -17,6 +18,13 @@ export function DownloadList({
   sethighlightIndex: (a: number | null) => void;
 }) {
   const [bulkActions, setBulkActions] = React.useState(false);
+  const getETA = (speed: string, filesize: string, progress: number) => {
+    const _speed = sizeToBytes(speed.replace("/s", ""));
+    const _r_filesize = sizeToBytes(filesize);
+    const _filesize = (_r_filesize * (100 - progress)) / 100;
+    const seconds = _filesize / _speed;
+    return convertSeconds(seconds);
+  };
   React.useEffect(() => {
     setDownloads((prev: IDownloadsUI[]) => {
       const temp = [...prev];
@@ -134,8 +142,13 @@ export function DownloadList({
             <td className="table_cells border-x-0">
               <div className="w-full">{it.status.toUpperCase()}</div>
               {it.status === "downloading" && (
-                <div className="text-center font-bold text-white">
-                  {`${it.speed}`}
+                <div className="text-left text-white">
+                  <span className="font-bold">{`${it.speed}`}</span>
+                  <span className="ml-4 font-bold">
+                    {getETA(it.speed, it.filesize, +it.percentage)
+                      ? "ETA: " + getETA(it.speed, it.filesize, +it.percentage)
+                      : ""}
+                  </span>
                 </div>
               )}
             </td>

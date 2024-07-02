@@ -5,7 +5,6 @@ import { bytesToSize } from "../utils/convert";
 import { getAllDownloads, updateDownload } from "../utils/download";
 import { downloadTasks } from "./downloadQueue";
 import prisma from "./prisma";
-import { app } from "electron";
 import { Loger } from "./loger";
 
 export default async (
@@ -15,13 +14,14 @@ export default async (
     | { action: "resume"; id: number; filename: string },
 ) => {
   console.log("addDownloadLink", url);
-  const appdatapath = app.getPath("downloads");
-  console.log("appdatapath", appdatapath);
-  Loger.log("appdatapath", appdatapath);
+  const setting = await prisma.setting.findFirst();
+  const globalDirectory = setting.globalDirectory;
+  console.log("globalDirectory", globalDirectory);
+  Loger.log("globalDirectory", globalDirectory);
 
   const downloader = new DownloaderHelper(
     url,
-    appdatapath,
+    globalDirectory,
     options.action == "start"
       ? {}
       : { fileName: options.filename, resumeIfFileExists: true },
