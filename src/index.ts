@@ -8,7 +8,6 @@ import {
   protocol,
   Tray,
 } from "electron";
-import ffmpeg from "fluent-ffmpeg";
 
 import path from "path";
 import { initIPCEvents } from "./lib/ipcEvents";
