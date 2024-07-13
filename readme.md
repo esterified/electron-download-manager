@@ -3,7 +3,7 @@
 Download manager for your desktop
 
 <a href="#badge">
-<img alt="name" src="https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/esterified/electron-download-manager/main/package.json&query=$.name&label=project&color=green&logo=electron">
+<img alt="name" src="https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/esterified/electron-download-manager/main/package.json&query=$.name&label=project&color=red&logo=electron">
 </a>
 <a href="#badge">
 <img alt="version" src="https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/esterified/electron-download-manager/main/package.json&query=$.version&label=version&logo=npm">
