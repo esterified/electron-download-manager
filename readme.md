@@ -17,6 +17,9 @@ Download manager for your desktop
 <a href="#badge">
 <img alt="GitHub License" src="https://img.shields.io/github/license/esterified/electron-download-manager">
 </a>
+<a href="#badge">
+<img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/esterified/electron-download-manager/ci.yml">
+</a>
 
 ## Description
 
