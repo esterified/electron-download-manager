@@ -15,7 +15,6 @@
     "db:generate": "prisma generate",
     "db:init": "prisma migrate dev --schema prisma/schema.prisma --name init",
     "prisma": "prisma",
-    "postinstall": "yarn db:init",
     "log:prod": "cat ~/Library/Logs/electron-download-manager/main.log"
   },
   "devDependencies": {
