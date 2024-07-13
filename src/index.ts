@@ -9,13 +9,11 @@ import {
   Tray,
 } from "electron";
 
-import path from "path";
 import { initIPCEvents } from "./lib/ipcEvents";
 import { downloadProcessorCron, Scheduler } from "./lib/scheduler";
 import { initGlobalSettings } from "./lib/initGlobalSettings";
 import dockMenu from "./menus/dockMenu";
 import { execSync } from "child_process";
-import { PrismaDBFullPath } from "./lib/prisma";
 import { initProtocols } from "./lib/protocols";
 import isDev from "electron-is-dev";
 
@@ -68,12 +66,12 @@ const createWindow = (): void => {
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
   initProtocols();
-  initPrisma();
   initTray();
   initDock();
   initIPCEvents();
   createWindow();
   initGlobalSettings();
+  // initPrisma(); // disabled not needed
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -111,16 +109,16 @@ const initDock = () => {
   app.dock.setIcon(icon);
 };
 
-const initPrisma = () => {
-  try {
-    execSync(
-      `export DATABASE_URL="${PrismaDBFullPath}" && npx prisma migrate deploy`,
-      { stdio: "inherit" },
-    );
-  } catch (error: any) {
-    console.log("exec error:: ", error?.message);
-  }
-};
+// const initPrisma = () => {
+//   try {
+//     execSync(
+//       `export DATABASE_URL="${PrismaDBFullPath}" && npx prisma migrate deploy`,
+//       { stdio: "inherit" },
+//     );
+//   } catch (error: any) {
+//     console.log("exec error:: ", error?.message);
+//   }
+// };
 
 //Register the protocol
 protocol.registerSchemesAsPrivileged([
