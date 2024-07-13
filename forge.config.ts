@@ -33,7 +33,6 @@ const config: ForgeConfig = {
       },
     }),
     new MakerDMG({
-      name: APP_NAME,
       icon: "src/images/icons/dock.icns",
     }),
   ],

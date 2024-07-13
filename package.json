@@ -64,6 +64,7 @@
     "@headlessui/react": "^2.0.4",
     "@prisma/client": "5.15.1",
     "electron-is": "^3.0.0",
+    "electron-is-dev": "^3.0.1",
     "electron-log": "^5.1.5",
     "electron-squirrel-startup": "^1.0.1",
     "node-downloader-helper": "^2.1.9",
