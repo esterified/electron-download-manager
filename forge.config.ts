@@ -11,7 +11,7 @@ import { FuseV1Options, FuseVersion } from "@electron/fuses";
 
 import { mainConfig } from "./webpack.main.config";
 import { rendererConfig } from "./webpack.renderer.config";
-import { APP_NAME } from "./config";
+// import { APP_NAME } from "./config";
 
 const config: ForgeConfig = {
   packagerConfig: {

@@ -28,7 +28,7 @@ export default async (
   );
 
   const sizeRequest: { name: string; total: number | null } | null =
-    await downloader.getTotalSize().catch((err) => {
+    await downloader.getTotalSize().catch((err: any): null => {
       console.log(err);
       return null;
     });
@@ -48,12 +48,14 @@ export default async (
               speed: "",
             },
           })
-          .catch(() => {
+          .catch((err: any): null => {
+            Loger.log("failed to create download", err);
             console.log("failed to create download");
             return null;
           })
       : await prisma.download.findFirst({ where: { id: options.id } });
   const allDownloads = await getAllDownloads();
+  Loger.log("allDownloads", allDownloads.length);
   GlobalMainWindow.webContents.send(
     "downloadCompleted",
     JSON.stringify(allDownloads),
