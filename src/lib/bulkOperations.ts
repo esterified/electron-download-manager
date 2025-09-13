@@ -1,5 +1,5 @@
 import { IpcMainEvent } from "electron";
-import prisma from "./prisma";
+import { db } from "./lowdb";
 import { downloadTasks, removeDownloadTaskbyIds } from "./downloadQueue";
 import { GlobalMainWindow } from "../main";
 import { getAllDownloads } from "../utils/download";
@@ -19,13 +19,8 @@ export const deleteDownloadHandler = async (
     }
   });
   removeDownloadTaskbyIds(ids);
-  await prisma.download.deleteMany({
-    where: {
-      id: {
-        in: ids,
-      },
-    },
-  });
+  db.data.downloads = db.data.downloads.filter((d) => !ids.includes(d.id));
+  await db.write();
   console.log(`download ID:${ids} Deleted`);
   const allDownloads = await getAllDownloads();
   GlobalMainWindow.webContents.send(
@@ -47,16 +42,10 @@ export const pauseDownloadHandler = async (
     }
   });
   removeDownloadTaskbyIds(ids);
-  await prisma.download.updateMany({
-    where: {
-      id: {
-        in: ids,
-      },
-    },
-    data: {
-      status: "paused" as DownloadStatus,
-    },
-  });
+  db.data.downloads = db.data.downloads.map((d) =>
+    ids.includes(d.id) ? { ...d, status: "paused" as DownloadStatus } : d,
+  );
+  await db.write();
   console.log(`download ID:${ids} Deleted`);
   const allDownloads = await getAllDownloads();
   GlobalMainWindow?.webContents.send(
@@ -71,15 +60,13 @@ export const playDownloadHandler = async (
   console.log(ids);
 
   ids.forEach(async (id) => {
-    const dl = await prisma.download.findFirst({
-      where: {
-        id,
-      },
-    });
-    await _initDownload(dl.url, {
-      action: "resume",
-      id: dl.id,
-      filename: dl.filename,
-    });
+    const dl = db.data.downloads.find((d) => d.id === id);
+    if (dl) {
+      await _initDownload(dl.url, {
+        action: "resume",
+        id: dl.id,
+        filename: dl.filename,
+      });
+    }
   });
 };

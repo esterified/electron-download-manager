@@ -17,7 +17,7 @@ const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
     icon: "src/images/icons/dock",
-    extraResource: ["./node_modules/.prisma", "./prisma/prod.db"],
+    // extraResource: ["./node_modules/.prisma", "./db/prod.json"],
   },
   rebuildConfig: {},
   makers: [

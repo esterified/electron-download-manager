@@ -1,5 +1,4 @@
 import { IpcMainEvent } from "electron";
-import prisma from "./prisma";
 import { updateDownload } from "../utils/download";
 import { downloadTasks } from "./downloadQueue";
 

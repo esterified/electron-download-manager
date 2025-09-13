@@ -1,10 +1,10 @@
-import { Download } from "@prisma/client";
+import type { Download, Setting } from "./lowdb";
 import { DownloaderHelper } from "node-downloader-helper";
 import { GlobalMainWindow, GlobalSchedulerInstance } from "../main";
 import { bytesToSize } from "../utils/convert";
 import { getAllDownloads, updateDownload } from "../utils/download";
 import { downloadTasks } from "./downloadQueue";
-import prisma from "./prisma";
+import { db } from "./lowdb";
 import { Loger } from "./loger";
 
 export default async (
@@ -14,8 +14,8 @@ export default async (
     | { action: "resume"; id: number; filename: string },
 ) => {
   console.log("addDownloadLink", url);
-  const setting = await prisma.setting.findFirst();
-  const globalDirectory = setting.globalDirectory;
+  const settings = db.data?.settings || [];
+  const globalDirectory = settings[0]?.globalDirectory;
   console.log("globalDirectory", globalDirectory);
   Loger.log("globalDirectory", globalDirectory);
 
@@ -35,25 +35,30 @@ export default async (
   const filesize = bytesToSize(sizeRequest?.total || 0);
   console.log("filesize: ", filesize);
 
-  const download: Download | null =
-    options.action == "start"
-      ? await prisma.download
-          .create({
-            data: {
-              url: url,
-              filename: sizeRequest?.name,
-              status: "downloading",
-              filesize: filesize,
-              percentage: 0,
-              speed: "",
-            },
-          })
-          .catch((err: any): null => {
-            Loger.log("failed to create download", err);
-            console.log("failed to create download");
-            return null;
-          })
-      : await prisma.download.findFirst({ where: { id: options.id } });
+  let download: Download | null = null;
+  if (options.action == "start") {
+    // Find max id for auto-increment
+    const downloads = db.data?.downloads || [];
+    const maxId =
+      downloads.length > 0 ? Math.max(...downloads.map((d) => d.id)) : 0;
+    download = {
+      id: maxId + 1,
+      url,
+      filename: sizeRequest?.name,
+      status: "downloading",
+      filesize,
+      percentage: 0,
+      speed: "",
+      filepath: "",
+      tags: "",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    db.data.downloads.push(download);
+    await db.write();
+  } else {
+    download = db.data?.downloads.find((d) => d.id === options.id) || null;
+  }
   const allDownloads = await getAllDownloads();
   Loger.log("allDownloads", allDownloads.length);
   GlobalMainWindow.webContents.send(

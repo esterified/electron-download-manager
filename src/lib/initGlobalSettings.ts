@@ -1,15 +1,7 @@
 import { app } from "electron";
-import prisma from "./prisma";
+import { db, initDB } from "./lowdb";
 
 export const initGlobalSettings = async () => {
-  const appdatapath = app.getPath("downloads");
-  const settingExist = await prisma.setting.findFirst();
-  if (!settingExist)
-    await prisma.setting.create({
-      data: {
-        globalDirectory: appdatapath,
-      },
-    });
-
-  console.log("initGlobalSettings");
+  await initDB();
+  console.log("initGlobalSettings Done!");
 };
