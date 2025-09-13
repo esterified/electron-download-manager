@@ -95,3 +95,4 @@ out/
 downloads/
 
 prisma/dev.db
+dev.json

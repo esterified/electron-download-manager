@@ -1,7 +1,6 @@
 import { IpcMainEvent } from "electron";
-import prisma from "./prisma";
-import { Download } from "@prisma/client";
 import { getAllDownloads } from "../utils/download";
+import { Download } from "./prisma";
 
 // arrow function
 export const getDownloadsHandler = async (
