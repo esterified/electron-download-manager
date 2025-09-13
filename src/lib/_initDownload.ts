@@ -1,10 +1,10 @@
-import type { Download, Setting } from "./prisma";
+import type { Download, Setting } from "./lowdb";
 import { DownloaderHelper } from "node-downloader-helper";
 import { GlobalMainWindow, GlobalSchedulerInstance } from "../main";
 import { bytesToSize } from "../utils/convert";
 import { getAllDownloads, updateDownload } from "../utils/download";
 import { downloadTasks } from "./downloadQueue";
-import { db } from "./prisma";
+import { db } from "./lowdb";
 import { Loger } from "./loger";
 
 export default async (

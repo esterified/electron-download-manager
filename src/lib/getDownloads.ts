@@ -1,6 +1,6 @@
 import { IpcMainEvent } from "electron";
 import { getAllDownloads } from "../utils/download";
-import { Download } from "./prisma";
+import { Download } from "./lowdb";
 
 // arrow function
 export const getDownloadsHandler = async (

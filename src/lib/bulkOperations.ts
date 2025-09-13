@@ -1,5 +1,5 @@
 import { IpcMainEvent } from "electron";
-import { db } from "./prisma";
+import { db } from "./lowdb";
 import { downloadTasks, removeDownloadTaskbyIds } from "./downloadQueue";
 import { GlobalMainWindow } from "../main";
 import { getAllDownloads } from "../utils/download";

@@ -1,5 +1,4 @@
-import { Download } from "@prisma/client";
-import { db } from "../lib/prisma";
+import { db, Download } from "../lib/lowdb";
 import { DownloadStatus } from "../lib/types";
 
 export const updateDownload = async ({

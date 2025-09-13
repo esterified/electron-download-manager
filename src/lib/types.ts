@@ -1,5 +1,5 @@
-import { Download } from "@prisma/client";
 import { DownloaderHelper } from "node-downloader-helper";
+import { Download } from "./lowdb";
 
 export interface IDownloadsUI extends Download {
   checked: boolean;
